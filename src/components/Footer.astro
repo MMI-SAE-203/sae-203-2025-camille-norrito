@@ -6,55 +6,90 @@ import IconTwitter from "../assets/icons/twitterclair.svg";
 import IconYoutube from "../assets/icons/youtubeclair.svg";
 ---
 
-<footer class="grille space-y-6 text-sm bg-darkpurple py-16 px-6 text-white">
-    <a class="block" href="/" aria-label="Accueil">
-        <LogoFooter />
-        <h3 class="uppercase text-sm tracking-wide text-stone-400">Festival de science fiction</h3>
-    </a>
-
-    <nav class="space-y-3">
-        <ul>
-            <li><a href="/agenda">MENTIONS LEGALES</a></li>
-            <li><a href="/contact">ARCHIVES</a></li>
-            <li><a href="/agenda">CONTACTS & ACCES</a></li>
-        </ul>
-    </nav>
-
-    <div class="space-y-3">
-        <h3 class="uppercase text-sm tracking-wide text-stone-400">CONTACT</h3>
-        <address class="not-italic">
-            90000 Belfort <br />
-            <a href="
-            tel:0384542727"> 03 84 54 27 27 </a><br />
-            <a href="contact@sci-fi-stival.fr"> contact@sci-fi-stival.fr</a>
-        </address>
+<footer class="bg-darkpurple text-white py-16 px-6 text-sm">
+    <!-- Logo centré en haut -->
+    <div
+        class="flex flex-col items-center justify-center mb-8 lg:col-span-3 lg:col-start-2"
+    >
+        <a href="/" aria-label="Accueil">
+            <LogoFooter class="w-24 lg:w-25 lg:h-16" />
+        </a>
+        <h3 class="uppercase text-sm tracking-wide text-stone-400 mt-1">
+            Festival de Science Fiction
+        </h3>
     </div>
 
-    <div class="space-y-3">
-        <h3 class="uppercase text-sm tracking-wide text-stone-400">
-            Nous suivre
-        </h3>
-        <ul class="flex gap-4">
-            <li>
-                <a href="https://facebook.com" aria-label="facebook">
-                    <IconFacebook class="fill-white" />
-                </a>
-            </li>
-            <li>
-                <a href="https://instagram.com" aria-label="instagram">
-                    <IconInstagram class="fill-white" />
-                </a>
-            </li>
-            <li>
-                <a href="https://twitter.com" aria-label="twitter">
-                    <IconTwitter class="fill-white" />
-                </a>
-            </li>
-            <li>
-                <a href="https://youtube.com" aria-label="youtube">
-                    <IconYoutube class="fill-white" />
-                </a>
-            </li>
-        </ul>
+    <!-- Conteneur principal : grid pour desktop -->
+    <div
+        class="grid grid-cols-1 gap-8 text-center lg:grid-cols-3 lg:text-left lg:gap-16"
+    >
+        <!-- Colonne 1 : Mentions légales & Contact -->
+        <div class="lg:col-span-1">
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="/mentions-legales" class="font-bold"
+                            >MENTIONS LEGALES</a
+                        >
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="mt-6">
+                <h4 class="uppercase text-sm tracking-wide text-stone-400 mb-2">
+                    CONTACT
+                </h4>
+                <address class="not-italic space-y-1">
+                    90000 Belfort <br />
+                    <a href="tel:0384542727">03 84 54 27 27</a><br />
+                    <a href="mailto:contact@sci-fi-stival.fr"
+                        >contact@sci-fi-stival.fr</a
+                    >
+                </address>
+            </div>
+        </div>
+
+        <!-- Colonne 2 : Archives -->
+        <div class="lg:col-span-1 text-center">
+            <ul class="space-y-2">
+                <li><a href="/archives" class="font-bold">ARCHIVES</a></li>
+            </ul>
+        </div>
+
+        <!-- Colonne 3 : Réseaux sociaux -->
+        <div class="lg:col-span-1">
+            <ul class="space-y-2">
+                <li>
+                    <a href="/contact" class="mt-2 font-bold">
+                        CONTACTS & ACCES</a
+                    >
+                </li>
+            </ul>
+            <h4 class="uppercase text-sm tracking-wide text-stone-400 mb-2">
+                NOUS SUIVRE
+            </h4>
+            <ul class="flex justify-center lg:justify-end gap-4">
+                <li>
+                    <a href="https://facebook.com" aria-label="Facebook"
+                        ><IconFacebook class="w-8 h-8 fill-white" /></a
+                    >
+                </li>
+                <li>
+                    <a href="https://instagram.com" aria-label="Instagram"
+                        ><IconInstagram class="w-8 h-8 fill-white" /></a
+                    >
+                </li>
+                <li>
+                    <a href="https://twitter.com" aria-label="Twitter"
+                        ><IconTwitter class="w-8 h-8 fill-white" /></a
+                    >
+                </li>
+                <li>
+                    <a href="https://youtube.com" aria-label="YouTube"
+                        ><IconYoutube class="w-8 h-8 fill-white" /></a
+                    >
+                </li>
+            </ul>
+        </div>
     </div>
 </footer>

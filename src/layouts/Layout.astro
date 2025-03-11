@@ -4,6 +4,7 @@ import "@fontsource-variable/mulish";
 import "@fontsource/syncopate";
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
 
 const { title, description, image = "/screenshot.jpg" } = Astro.props;
 
@@ -62,9 +63,10 @@ const siteName = "Sci-fi stival";
 		<link rel="manifest" href="/site.webmanifest" />
 	</head>
 	<body>
+		<Header />
 		<main>
 			<slot />
 		</main>
-		<Footer/>
+		<Footer />
 	</body>
 </html>

@@ -50,7 +50,7 @@
     }
 
     h4 {
-        @apply text-lg font-extrabold;
+        @apply text-lg font-extrabold font-title-sync font-extrabold;
     }
 
     h5 {
