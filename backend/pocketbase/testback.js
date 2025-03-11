@@ -1,5 +1,7 @@
 import {
-    getAllFilms, getAllActivities, getAllInvites, getFilmById, getActivityById, getInviteById, getActivitiesByAnimateurId, getActivitiesByAnimateurName
+    getAllFilms, getAllActivities, getAllInvites, getFilmById, getActivityById, 
+    getInviteById, getActivitiesByAnimateurId, getActivitiesByAnimateurName, update, 
+    createUser, loginUser, isLoggedIn, logoutUser
 } from './backend.mjs';
 
 // test de récupération de tous les films triés par date
@@ -58,11 +60,40 @@ import {
 //     console.error(e);
 // }
 
-// test de récupération des activités d’un animateur par son nom
+// // test de récupération des activités d’un animateur par son nom
+// try {
+//     const activitiesByName = await getActivitiesByAnimateurName("Pasquier");
+//     console.log(activitiesByName);
+// } catch (e) {
+//     console.error(e);
+// }
+
+// // test de modif des activités ou du film
+// try {
+//     await update("Activites", 'jhcr75q024s9z6f', { titre_activite: "After Party : Concert live Musiques cultes du cinéma SF" });
+// } catch (e) {
+//     console.error(e);
+// }
+
+// // Test de création d'un utilisateur
+// try {
+//     await createUser("user1@test.fr", "123456789");
+// } catch (e) {
+//     console.error(e);
+// }
+
+// // Test de connexion utilisateur
+// try {
+//     await loginUser("user1@test.fr", "123456789");
+//     console.log("Utilisateur connecté ?", isLoggedIn());
+// } catch (e) {
+//     console.error(e);
+// }
+
+// Test de déconnexion utilisateur
 try {
-    const activitiesByName = await getActivitiesByAnimateurName('Vincent Pasquier');
-    console.table(activitiesByName);
+    await logoutUser();
+    console.log("Utilisateur connecté après déconnexion ?", isLoggedIn());
 } catch (e) {
     console.error(e);
 }
-

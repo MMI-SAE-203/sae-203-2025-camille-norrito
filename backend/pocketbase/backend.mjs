@@ -54,12 +54,49 @@ export async function getActivitiesByAnimateurId(animateurId) {
 // F retourne toutes les activités d’un animateur donné par son nom
 export async function getActivitiesByAnimateurName(nomAnimateur) {
     const records = await pb.collection('Activites').getFullList({
-        filter: `invite_associe.nom_invite = '${nomAnimateur}'`,
+        filter: `invite_associe.nom_invite = "${nomAnimateur}"`,
         expand: 'invite_associe'
     });
     return records;
 }
 
+// Ajouter ou modifier un film, une activité ou un invité
+export async function update(collection, id, data) {
+    await pb.collection(collection).update(id, data);
+}
 
+// Anthentification par mail 
+export async function createUser(email, password) {
+    try {
+        await pb.collection("users").create({
+            email: email,
+            password: password,
+            passwordConfirm: password
+        });
+        console.log("Utilisateur créé avec succès !");
+    } catch (e) {
+        console.error("Erreur lors de la création de l'utilisateur :", e);
+    }
+}
 
+// Connexion de l'utilisateur
+export async function loginUser(email, password) {
+    try {
+        await pb.collection("users").authWithPassword(email, password);
+        console.log("Connexion réussie !");
+        console.log("Utilisateur connecté :", pb.authStore.model);
+    } catch (e) {
+        console.error("Erreur de connexion :", e);
+    }
+}
 
+// Vérifier si l'utilisateur est connecté
+export function isLoggedIn() {
+    return pb.authStore.isValid;
+}
+
+// Déconnexion d'un utilisateur
+export async function logoutUser() {
+    pb.authStore.clear();
+    console.log("Déconnexion réussie !");
+}
