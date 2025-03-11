@@ -2,6 +2,68 @@
 
 @theme {
     --font-sans: "Mulish", sans-serif;
-    --font-title-orb: "Orbitron", sans-serif;
-    --font-title-sync: "Syncopate", sans-serif;
+    --font-title-orb: "Orbitron Variable", sans-serif;
+    --font-title-sync: 'Syncopate', sans-serif;
+
+    --my-grid: repeat(12, minmax(0, 64px));
+
+    --color-white: oklch(100% 0 0);
+    --color-lilac: oklch(90.47% 0.043 311.46);
+    --color-darkpurple: oklch(41.68% 0.2057 303.73);
+    --color-purple: oklch(61.84% 0.1763 308.62);
+    --color-green: oklch(82.04% 0.1449 184.17);
+    --color-pink: oklch(68.35% 0.219 4.26);
+    --color-black: oklch(22.67% 0.0134 34.36);
+    --color-lavender: oklch(79.43% 0.0999 310.38);
+    --color-beige: oklch(87.23% 0.0033 17.22);
+}
+
+@layer base {
+
+    body {
+        @apply font-sans text-base leading-relaxed font-light bg-(--color-lavender);
+    }
+
+    img {
+        @apply max-w-full h-auto object-cover z-0;
+    }
+
+    p {
+        @apply text-sm font-semibold;
+    }
+
+    .separator::before {
+        content: "";
+        @apply bg-black w-1/2 h-px block mx-auto my-14;
+    }
+
+    h1 {
+        @apply text-3xl lg:text-4xl font-title-orb font-semibold text-(--color-pink);
+    }
+
+    h2 {
+        @apply text-lg lg:text-xl font-title-sync font-normal;
+    }
+
+    h3 {
+        @apply text-xl font-title-orb font-normal;
+    }
+
+    h4 {
+        @apply text-lg font-extrabold;
+    }
+
+    h5 {
+        @apply text-xs font-black;
+    }
+
+    h6 {
+        @apply text-sm font-light;
+    }
+}
+
+@layer components {
+    .grille {
+        @apply px-6 lg:grid lg:grid-cols-(--my-grid) lg:justify-center lg:gap-12;
+    }
 }
