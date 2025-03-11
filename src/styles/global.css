@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Mulish", sans-serif;
+    --font-title-orb: "Orbitron", sans-serif;
+    --font-title-sync: "Syncopate", sans-serif;
+}
