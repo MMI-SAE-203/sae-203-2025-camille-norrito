@@ -1,0 +1,36 @@
+---
+import { formatDate } from "../js/helper";
+const { ...activite } = Astro.props;
+---
+
+<article
+    class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md lg:max-w-[350px] h-full mx-auto"
+>
+    <!-- 📜 Contenu texte -->
+    <div class="flex-grow bg-white p-4 flex flex-col">
+        <!-- 🏆 Titre de l'activité -->
+        <h4 class="text-lg font-sans font-bold text-black mb-2">
+            {activite.titre_activite}
+        </h4>
+
+        <!-- 🏷 Type d'activité -->
+        <p class="text-sm font-semibold text-purple-600 mb-2">
+            {activite.type_activite}
+        </p>
+
+        <!-- 📅 Date -->
+        <p class="text-sm text-gray-600 mb-2">
+            📅 {formatDate(activite.date_heure_activite)}
+        </p>
+
+        <!-- ➕ Bouton "Plus d'info" -->
+        <div class="mt-auto pt-2">
+            <a
+                href={`/activites/${activite.id}`}
+                class="text-pink-600 hover:underline font-medium"
+            >
+                Plus d'info
+            </a>
+        </div>
+    </div>
+</article>

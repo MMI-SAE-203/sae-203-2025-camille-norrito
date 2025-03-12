@@ -113,3 +113,9 @@ export async function oneGuest(id) {
         return null;
     }
 }
+
+//Fonction pour récupérer un invité par ID
+export async function getInviteById(id) {
+    const invite = await pb.collection("Invites").getOne(id);
+    return invite;
+}

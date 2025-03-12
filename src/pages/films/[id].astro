@@ -169,6 +169,42 @@ if (film.invite_associe && typeof film.invite_associe === "string") {
                                 </div>
                             )
                         }
+                        
+                        {
+                            invite && (
+                                <div>
+                                    <h4 class="text-lg font-semibold">
+                                        Invité associé
+                                    </h4>
+                                    <div class="flex items-center mt-2 gap-3">
+                                        <!-- Photo de l'invité -->
+                                        <div class="w-12 h-12 rounded-full overflow-hidden">
+                                            <ImagePB
+                                                record={invite}
+                                                field="photo_invite"
+                                                alt={`Photo de ${invite.prenom_invite} ${invite.nom_invite}`}
+                                                classPicture="w-full h-full"
+                                                classImg="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        
+                                        <div class="flex flex-col">
+                                            <p class="text-gray-700">
+                                                {invite.prenom_invite} {invite.nom_invite}
+                                            </p>
+                                            
+                                            <!-- Bouton pour accéder à la page de l'invité -->
+                                            <a 
+                                                href={`/invites/${invite.id}`}
+                                                class="text-sm text-blue-600 hover:underline"
+                                            >
+                                                Voir le profil
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
                     </div>
 
                     <!-- Bouton favori -->

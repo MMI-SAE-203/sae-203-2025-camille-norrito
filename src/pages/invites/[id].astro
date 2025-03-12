@@ -1,113 +1,107 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import {
+    getAllInvites,
     getInviteById,
-    getFilmsByInviteId,
 } from "../../../backend/pocketbase/backend.mjs";
 
-// Récupérer l'ID de l'invité depuis l'URL
-const { id } = Astro.params;
-
-// Vérifier si l'ID est valide
-if (!id) {
-    return Astro.redirect("/404");
+// 🚀 Fonction pour récupérer tous les invités et générer leurs pages dynamiques
+export async function getStaticPaths() {
+    const invites = await getAllInvites();
+    return invites.map((invite) => ({
+        params: { id: invite.id },
+        props: { invite },
+    }));
 }
 
-// Récupérer les données de l'invité
-const invite = await getInviteById(id);
+// ✅ Récupérer l'invité depuis `props`
+const { invite } = Astro.props;
 
 // Vérifier si l'invité existe
 if (!invite) {
     return Astro.redirect("/404");
 }
 
-// Récupérer les films associés à cet invité (si applicable)
-const filmsAssocies = await getFilmsByInviteId(id);
-
 // Formater le rôle avec une majuscule
 const roleFormate = invite.role_invite
     ? invite.role_invite.charAt(0).toUpperCase() + invite.role_invite.slice(1)
     : "Invité";
 
-// URL de l'image de l'invité
+// 📌 URL de l'image de l'invité (avec fallback si absente)
 const photoUrl = invite.photo_invite
     ? `http://127.0.0.1:8090/api/files/Invites/${invite.id}/${invite.photo_invite}`
     : "/placeholder.jpg";
 
-// Titre de la page
+// 📌 Titre de la page
 const pageTitle = `${invite.prenom_invite} ${invite.nom_invite} - ${roleFormate}`;
+
+// Image et titre du header
+const heroImage = "/default-hero.jpg";
+const heroTitle = pageTitle;
+const heroSubtitle = roleFormate;
 ---
 
-<Layout title={pageTitle}>
-    <div class="container mx-auto px-4 py-8">
-        <a
-            href="/invites"
-            class="inline-flex items-center mb-6 text-(--color-pink) hover:underline"
+<Layout
+    title={pageTitle}
+    heroImage={heroImage}
+    heroTitle={heroTitle}
+    heroSubtitle={heroSubtitle}
+>
+    <div class="container mx-auto px-4 py-6">
+        <!-- 🏆 Carte de l'invité avec MARGE SUPÉRIEURE -->
+        <div
+            class="bg-white rounded-lg shadow-md overflow-hidden max-w-3xl mx-auto mt-32"
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-            >
-                <path
-                    fill-rule="evenodd"
-                    d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                    clip-rule="evenodd"></path>
-            </svg>
-            Retour à la liste des invités
-        </a>
-
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-            <div class="md:flex">
-                <!-- Photo de l'invité -->
+            <!-- 🔥 Ajout de mt-24 ici pour descendre la carte -->
+            <div class="flex flex-col md:flex-row">
+                <!-- 📸 Photo -->
                 <div class="md:w-1/3">
                     <img
                         src={photoUrl}
                         alt={`Photo de ${invite.prenom_invite} ${invite.nom_invite}`}
-                        class="w-full h-auto object-cover md:h-full"
+                        class="w-full h-auto object-cover rounded-t-lg md:rounded-l-lg md:rounded-t-none"
                     />
                 </div>
 
-                <!-- Informations de l'invité -->
-                <div class="p-6 md:w-2/3 flex flex-col justify-between">
-                    <div>
-                        <div class="mb-2">
-                            <span
-                                class="inline-block bg-(--color-pink) text-white text-sm px-3 py-1 rounded-full"
-                            >
-                                {roleFormate}
-                            </span>
-                        </div>
-                        <h1
-                            class="text-3xl font-bold text-(--color-purple) mb-4"
+                <!-- ℹ️ Infos de l'invité -->
+                <div class="md:w-2/3 p-4 flex flex-col">
+                    <div class="mb-2">
+                        <span
+                            class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold"
                         >
-                            {invite.prenom_invite}
-                            {invite.nom_invite}
-                        </h1>
-
-                        {
-                            invite.biographie_invite && (
-                                <div class="prose max-w-none mb-6">
-                                    <h2 class="text-xl font-semibold mb-2">
-                                        Biographie
-                                    </h2>
-                                    <p>{invite.biographie_invite}</p>
-                                </div>
-                            )
-                        }
+                            {roleFormate}
+                        </span>
                     </div>
 
+                    <h1 class="text-2xl font-bold mb-3">
+                        {invite.prenom_invite}
+                        {invite.nom_invite}
+                    </h1>
+
+                    <!-- 📝 Biographie -->
                     {
-                        invite.lien_imdb && (
-                            <div class="mt-4">
+                        invite.biographie_invite && (
+                            <div class="mb-4">
+                                <h2 class="text-lg font-semibold">
+                                    Biographie
+                                </h2>
+                                <p class="text-gray-700 text-sm">
+                                    {invite.biographie_invite}
+                                </p>
+                            </div>
+                        )
+                    }
+
+                    <!-- 📩 Email -->
+                    {
+                        invite.email_invite && (
+                            <div class="mt-auto">
+                                <h2 class="text-lg font-semibold">Contact</h2>
                                 <a
-                                    href={invite.lien_imdb}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="inline-flex items-center px-4 py-2 bg-(--color-beige) text-(--color-darkpurple) rounded-lg hover:bg-opacity-80 transition-colors"
+                                    href={`mailto:${invite.email_invite}`}
+                                    class="text-blue-600 hover:text-blue-800 text-sm"
                                 >
-                                    Voir sur IMDb
+                                    {invite.email_invite}
                                 </a>
                             </div>
                         )
@@ -116,57 +110,25 @@ const pageTitle = `${invite.prenom_invite} ${invite.nom_invite} - ${roleFormate}
             </div>
         </div>
 
-        <!-- Films associés à l'invité -->
-        {
-            filmsAssocies && filmsAssocies.length > 0 && (
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-(--color-purple) mb-4">
-                        Films associés
-                    </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filmsAssocies.map((film) => (
-                            <a
-                                href={`/films/${film.id}`}
-                                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                            >
-                                <div class="aspect-w-16 aspect-h-9 w-full">
-                                    <img
-                                        src={`http://127.0.0.1:8090/api/files/Films/${film.id}/${film.affiche_film}`}
-                                        alt={`Affiche du film ${film.titre_film}`}
-                                        class="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="text-lg font-semibold text-(--color-pink) mb-1">
-                                        {film.titre_film}
-                                    </h3>
-                                    {film.realisateur_film && (
-                                        <p class="text-sm text-gray-600 mb-2">
-                                            Réalisé par {film.realisateur_film}
-                                        </p>
-                                    )}
-                                    {film.date_heure_film && (
-                                        <p class="text-sm text-gray-700">
-                                            <span class="font-medium">
-                                                Projection:
-                                            </span>{" "}
-                                            {new Date(
-                                                film.date_heure_film,
-                                            ).toLocaleDateString("fr-FR", {
-                                                day: "numeric",
-                                                month: "long",
-                                                year: "numeric",
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                            })}
-                                        </p>
-                                    )}
-                                </div>
-                            </a>
-                        ))}
-                    </div>
-                </div>
-            )
-        }
+        <!-- 🔙 Bouton retour en arrière (placé sous la carte avec mt-6) -->
+        <div class="text-center mt-6">
+            <button
+                onclick="history.back()"
+                class="text-blue-600 hover:text-blue-800 flex items-center justify-center mx-auto"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                Retour en arrière
+            </button>
+        </div>
     </div>
 </Layout>

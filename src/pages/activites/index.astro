@@ -1,0 +1,249 @@
+---
+import LayoutWithHero from "../../layouts/LayoutWithHero.astro";
+import ImgHero from "../../assets/img/headerPages.webp";
+import ImgHeroDesktop from "../../assets/img/headerPagesDesktop.webp";
+import CardActivite from "../../components/CardActivite.astro";
+import { getAllActivities } from "../../../backend/pocketbase/backend.mjs";
+
+const title = "Activités";
+const subTitle = "Découvrez les événements du festival";
+const description =
+    "Retrouvez toutes les activités organisées durant le festival.";
+
+const activites = await getAllActivities();
+console.log("Activités récupérées :", activites);
+
+// Convertir les activités en JSON pour le script frontend
+const activitesJson = JSON.stringify(activites);
+---
+
+<LayoutWithHero
+    title={title}
+    description={description}
+    subTitle={subTitle}
+    src={ImgHero}
+    srcDesktop={ImgHeroDesktop}
+    alt="hero"
+    classLayout="h-65"
+>
+    <Fragment slot="content">
+        <p>Retrouvez toutes les activités organisées durant le festival.</p>
+
+        <!-- 📌 Section avec boutons -->
+        <div class="my-8">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <button
+                    id="show-all"
+                    class="bg-(--color-beige) text-(--color-pink) px-4 py-2 rounded-lg shadow transition duration-300"
+                >
+                    Afficher toutes les activités
+                </button>
+                <button
+                    id="sort-date"
+                    class="bg-(--color-darkpurple) text-(--color-white) px-4 py-2 rounded-lg shadow transition duration-300 flex items-center justify-center gap-2"
+                >
+                    Trier par date <span id="sort-icon">↑</span>
+                </button>
+
+                <!-- Nouveau bouton pour filtrer par type -->
+                <div class="relative">
+                    <button
+                        id="filter-type"
+                        class="bg-(--color-pink) text-(--color-white) px-4 py-2 rounded-lg shadow transition duration-300 flex items-center justify-center gap-2"
+                    >
+                        Filtrer par type <span>▼</span>
+                    </button>
+                    <div
+                        id="type-dropdown"
+                        class="hidden absolute z-10 mt-1 w-full bg-white rounded-lg shadow-lg py-2"
+                    >
+                        <!-- Les options seront générées dynamiquement -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🏆 Grille des activités -->
+            <div
+                id="activites-grid"
+                class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 my-24 mx-auto container"
+            >
+                {
+                    activites.length > 0 ? (
+                        activites.map((activite) => (
+                            <div class="w-full sm:max-w-none lg:max-w-[350px] mx-auto">
+                                <CardActivite {...activite} />
+                            </div>
+                        ))
+                    ) : (
+                        <p class="col-span-full text-center">
+                            Aucune activité à afficher.
+                        </p>
+                    )
+                }
+            </div>
+        </div>
+    </Fragment>
+</LayoutWithHero>
+
+<script define:vars={{ activitesJson }}>
+    let activitesData = JSON.parse(activitesJson);
+    let displayedActivites = [...activitesData]; // Copie pour affichage
+    let sortDirection = "asc";
+    let currentType = "all";
+
+    document.addEventListener("DOMContentLoaded", function () {
+        attachEventListeners();
+        initTypeDropdown();
+    });
+
+    function attachEventListeners() {
+        // Trier par date
+        document
+            .getElementById("sort-date")
+            .addEventListener("click", sortActivitiesByDate);
+
+        // Afficher toutes les activités
+        document.getElementById("show-all").addEventListener("click", () => {
+            currentType = "all";
+            displayedActivites = [...activitesData];
+            renderActivities();
+        });
+
+        // Toggle dropdown
+        document.getElementById("filter-type").addEventListener("click", () => {
+            document.getElementById("type-dropdown").classList.toggle("hidden");
+        });
+
+        // Fermer le dropdown quand on clique ailleurs
+        document.addEventListener("click", (e) => {
+            if (
+                !e.target.closest("#filter-type") &&
+                !e.target.closest("#type-dropdown")
+            ) {
+                document
+                    .getElementById("type-dropdown")
+                    .classList.add("hidden");
+            }
+        });
+    }
+
+    function initTypeDropdown() {
+        // Extraire tous les types d'activités uniques
+        const typeDropdown = document.getElementById("type-dropdown");
+        const activityTypes = [
+            ...new Set(activitesData.map((a) => a.type_activite)),
+        ];
+
+        // Ajouter une option "Tous" en premier
+        const allOption = document.createElement("div");
+        allOption.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer";
+        allOption.textContent = "Tous les types";
+        allOption.addEventListener("click", () => filterByType("all"));
+        typeDropdown.appendChild(allOption);
+
+        // Ajouter les options de types
+        activityTypes.forEach((type) => {
+            const option = document.createElement("div");
+            option.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer";
+            option.textContent = type;
+            option.addEventListener("click", () => filterByType(type));
+            typeDropdown.appendChild(option);
+        });
+    }
+
+    function filterByType(type) {
+        currentType = type;
+        document.getElementById("type-dropdown").classList.add("hidden");
+
+        if (type === "all") {
+            displayedActivites = [...activitesData];
+        } else {
+            displayedActivites = activitesData.filter(
+                (a) => a.type_activite === type,
+            );
+        }
+
+        // Maintenir le tri actuel
+        if (sortDirection !== null) {
+            sortActivitiesByDate(false);
+        } else {
+            renderActivities();
+        }
+    }
+
+    function sortActivitiesByDate(toggleDirection = true) {
+        if (toggleDirection) {
+            sortDirection = sortDirection === "asc" ? "desc" : "asc";
+            document.getElementById("sort-icon").textContent =
+                sortDirection === "asc" ? "↑" : "↓";
+        }
+
+        displayedActivites.sort((a, b) => {
+            const dateA = new Date(a.date_heure_activite);
+            const dateB = new Date(b.date_heure_activite);
+            return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+        });
+
+        renderActivities();
+    }
+
+    function renderActivities() {
+        const activitesGrid = document.getElementById("activites-grid");
+        activitesGrid.innerHTML = "";
+
+        if (displayedActivites.length === 0) {
+            const message = document.createElement("p");
+            message.className = "col-span-full text-center";
+            message.textContent =
+                "Aucune activité ne correspond à ces critères.";
+            activitesGrid.appendChild(message);
+            return;
+        }
+
+        displayedActivites.forEach((activite) => {
+            const card = document.createElement("div");
+            card.className = "w-full sm:max-w-none lg:max-w-[350px] mx-auto";
+
+            // Utiliser le même format que votre CardActivite.astro
+            card.innerHTML = `
+                <article class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md lg:max-w-[350px] h-full mx-auto">
+                    <!-- 📜 Contenu texte -->
+                    <div class="flex-grow bg-white p-4 flex flex-col">
+                        <!-- 🏆 Titre de l'activité -->
+                        <h4 class="text-lg font-sans font-bold text-black mb-2">
+                            ${activite.titre_activite}
+                        </h4>
+                        
+                        <!-- 🏷 Type d'activité -->
+                        <p class="text-sm font-semibold text-purple-600 mb-2">
+                            ${activite.type_activite}
+                        </p>
+                        
+                        <!-- 📅 Date -->
+                        <p class="text-sm text-gray-600 mb-2">
+                            📅 ${new Date(
+                                activite.date_heure_activite,
+                            ).toLocaleDateString("fr-FR", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })}
+                        </p>
+                        
+                        <!-- ➕ Bouton "Plus d'info" -->
+                        <!-- ✅ Version corrigée -->
+                        <div class="mt-auto pt-2">
+                            <a href="/activites/${activite.id}" class="text-pink-600 hover:underline font-medium">
+                                Plus d'info
+                            </a>
+                        </div>
+
+                    </div>
+                </article>
+            `;
+            activitesGrid.appendChild(card);
+        });
+    }
+</script>
