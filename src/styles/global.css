@@ -13,7 +13,7 @@
     --color-purple: oklch(61.84% 0.1763 308.62);
     --color-green: oklch(82.04% 0.1449 184.17);
     --color-pink: oklch(68.35% 0.219 4.26);
-    --color-black: oklch(22.67% 0.0134 34.36);
+    --color-black: oklch(14.69% 0.0423 266.8);
     --color-lavender: oklch(79.43% 0.0999 310.38);
     --color-beige: oklch(87.23% 0.0033 17.22);
 }
@@ -71,4 +71,34 @@
         overflow: hidden;
     }
     
+	.main-content {
+	  p {
+	    @apply mb-4;
+	  }
+	  h2,
+	  h3,
+	  h4 {
+	    @apply mb-4;
+	  }
+	  h2:not(:first-child),
+	  h3:not(:first-child),
+	  h4:not(:first-child) {
+	    @apply mt-8;
+	  }
+	  ul {
+	    @apply list-disc pl-5 my-4;
+	  }
+	  ol {
+	    @apply list-decimal pl-5 my-4;
+	  }
+	  figure {
+	    @apply lg:-mx-32;
+	  }
+	  figcaption {
+	    @apply text-sm text-gray-500 mt-2;
+	  }
+	  address {
+	    @apply not-italic;
+	  }
+	}
 }
