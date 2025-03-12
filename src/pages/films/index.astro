@@ -19,6 +19,8 @@ const filmsWithFavorites = films.map((film) => {
     }
     return film;
 });
+const genres = [...new Set(filmsWithFavorites.map((film) => film.genre_film).filter(Boolean))];
+const genresJson = JSON.stringify(genres);
 
 // Convertir les films en JSON pour les passer au frontend
 const filmsJson = JSON.stringify(filmsWithFavorites);
@@ -61,6 +63,27 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
                 </button>
             </div>
 
+            <!-- Filtres par genre -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold mb-3 text-center">Filtrer par genre</h4>
+                <div id="genre-filters" class="flex flex-wrap justify-center gap-2">
+                    <button
+                        data-genre="all"
+                        class="genre-filter bg-(--color-beige) text-(--color-pink) px-3 py-1 rounded-lg shadow transition duration-300 active"
+                    >
+                        Tous les genres
+                    </button>
+                    {genres.map((genre) => (
+                        <button
+                            data-genre={genre}
+                            class="genre-filter bg-(--color-beige) text-(--color-pink) px-3 py-1 rounded-lg shadow transition duration-300"
+                        >
+                            {genre}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             <!-- Affichage des films en colonne sur mobile, grille sur desktop -->
             <div
                 id="films-grid"
@@ -69,7 +92,7 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
                 {
                     filmsWithFavorites.length > 0 ? (
                         filmsWithFavorites.map((film) => (
-                            <div class="w-full sm:max-w-none lg:max-w-[350px] mx-auto relative">
+                            <div class="w-full sm:max-w-none lg:max-w-[350px] mx-auto relative" data-genre={film.genre_film}>
                                 <!-- Bouton favori -->
                                 <div class="absolute top-2 right-2 z-10">
                                     <button 
@@ -101,11 +124,13 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
     </Fragment>
 </LayoutWithHero>
 
-<script define:vars={{ filmsJson }}>
+<script define:vars={{ filmsJson, genresJson }}>
     // Conversion de la chaîne JSON en objet JavaScript
     let filmsData = JSON.parse(filmsJson);
+    let genres = JSON.parse(genresJson);
     let showOnlyFavorites = false;
     let sortDirection = "asc";
+    let currentGenre = "all";
 
     // Au chargement du DOM, initialiser les icônes de favoris
     document.addEventListener("DOMContentLoaded", function () {
@@ -152,6 +177,29 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
                 const filmId = this.getAttribute("data-id");
                 toggleFavorite(filmId);
             });
+        });
+        
+        // Boutons de filtrage par genre
+        document.querySelectorAll(".genre-filter").forEach((button) => {
+            button.addEventListener("click", function () {
+                const genre = this.getAttribute("data-genre");
+                currentGenre = genre;
+                updateGenreFilterButtons();
+                filterFilms();
+            });
+        });
+    }
+
+    // Mettre à jour les styles des boutons de genre
+    function updateGenreFilterButtons() {
+        document.querySelectorAll(".genre-filter").forEach((button) => {
+            if (button.getAttribute("data-genre") === currentGenre) {
+                button.classList.add("active", "bg-(--color-pink)", "text-(--color-white)");
+                button.classList.remove("bg-(--color-beige)", "text-(--color-pink)");
+            } else {
+                button.classList.remove("active", "bg-(--color-pink)", "text-(--color-white)");
+                button.classList.add("bg-(--color-beige)", "text-(--color-pink)");
+            }
         });
     }
 
@@ -209,6 +257,9 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
                 filmsGrid.appendChild(element);
             });
         }
+        
+        // Appliquer à nouveau les filtres après le tri
+        filterFilms(false);
     }
 
     // Fonction pour basculer l'état de favori d'un film
@@ -229,20 +280,22 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
                 icon.classList.remove("text-yellow-500");
             }
             
-            // Si on est en mode "favoris uniquement", mettre à jour l'affichage
-            if (showOnlyFavorites) {
-                filterFilms();
-            }
+            // Mettre à jour l'affichage
+            filterFilms();
         }
     }
 
-    // Fonction pour filtrer les films selon les favoris
-    function filterFilms() {
+    // Fonction pour filtrer les films selon les favoris et le genre
+    function filterFilms(resetGrid = true) {
+        if (resetGrid) {
+            removeNoFilmsMessage();
+        }
+        
         const filmElements = Array.from(document.getElementById("films-grid").children);
+        let visibleCount = 0;
         
         filmElements.forEach(element => {
             if (element.classList.contains("col-span-full")) {
-                element.remove();
                 return;
             }
             
@@ -251,21 +304,42 @@ const filmsJson = JSON.stringify(filmsWithFavorites);
             
             if (!film) return;
             
-            if (showOnlyFavorites && !film.favori) {
-                element.classList.add("hidden");
-            } else {
+            // Vérifier si le film correspond aux critères de filtrage
+            const matchesFavorite = !showOnlyFavorites || film.favori;
+            const matchesGenre = currentGenre === "all" || film.genre_film === currentGenre;
+            
+            if (matchesFavorite && matchesGenre) {
                 element.classList.remove("hidden");
+                visibleCount++;
+            } else {
+                element.classList.add("hidden");
             }
         });
         
-        // Vérifier s'il y a des films à afficher
-        const visibleFilms = filmElements.filter(el => !el.classList.contains("hidden") && !el.classList.contains("col-span-full"));
-        
-        if (visibleFilms.length === 0) {
+        // Afficher un message si aucun film ne correspond aux critères
+        if (visibleCount === 0) {
             const message = document.createElement("p");
             message.className = "col-span-full text-center";
-            message.textContent = showOnlyFavorites ? "Vous n'avez pas encore de films favoris." : "Aucun film à afficher.";
+            
+            if (showOnlyFavorites && currentGenre !== "all") {
+                message.textContent = `Vous n'avez pas de films favoris dans la catégorie "${currentGenre}".`;
+            } else if (showOnlyFavorites) {
+                message.textContent = "Vous n'avez pas encore de films favoris.";
+            } else if (currentGenre !== "all") {
+                message.textContent = `Aucun film dans la catégorie "${currentGenre}".`;
+            } else {
+                message.textContent = "Aucun film à afficher.";
+            }
+            
             document.getElementById("films-grid").appendChild(message);
+        }
+    }
+    
+    // Fonction pour supprimer le message "Aucun film"
+    function removeNoFilmsMessage() {
+        const message = document.querySelector("#films-grid .col-span-full");
+        if (message) {
+            message.remove();
         }
     }
 </script>

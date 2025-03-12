@@ -1,0 +1,48 @@
+---
+import ImagePB from "./ImagePB.astro";
+const { ...invite } = Astro.props;
+---
+
+<article
+    class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md lg:max-w-[350px] h-full mx-auto"
+>
+    <!-- Conteneur d'image avec ratio fixe -->
+    <div class="relative w-full aspect-[2/3] overflow-hidden">
+        <ImagePB
+            record={invite}
+            field="photo_invite"
+            alt={`Photo de ${invite.prenom_invite} ${invite.nom_invite}`}
+            classPicture="w-full h-full duotone"
+            classImg="w-full h-full object-cover group-hover:grayscale-0 group-hover:mix-blend-normal"
+        />
+    </div>
+
+    <!-- Zone de contenu textuel - fond blanc -->
+    <div class="flex-grow bg-white p-4 flex flex-col">
+        <!-- Nom de l'invité -->
+        <h4 class="text-lg font-sans font-bold text-black mb-2 line-clamp-2">
+            {invite.prenom_invite}
+            {invite.nom_invite}
+        </h4>
+
+        <!-- Rôle de l'invité -->
+        {
+            invite.role_invite && (
+                <p class="text-sm font-semibold text-purple mb-2">
+                    {invite.role_invite.charAt(0).toUpperCase() +
+                        invite.role_invite.slice(1)}
+                </p>
+            )
+        }
+
+        <!-- Lien vers plus d'infos -->
+        <div class="mt-auto pt-2">
+            <a
+                href={`/invites/${invite.id}`}
+                class="text-pink-600 hover:underline font-medium"
+            >
+                Plus d'info
+            </a>
+        </div>
+    </div>
+</article>

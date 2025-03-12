@@ -1,0 +1,237 @@
+---
+import LayoutWithHero from "../../layouts/LayoutWithHero.astro";
+import ImagePB from "../../components/ImagePB.astro";
+import {
+    getAllFilms,
+    getFilmById,
+    getInviteById,
+} from "../../../backend/pocketbase/backend.mjs";
+import { formatDate } from "../../js/helper";
+
+// Définition des routes dynamiques
+export async function getStaticPaths() {
+    const films = await getAllFilms();
+    return films.map((film) => ({ params: { id: film.id }, props: { film } }));
+}
+
+// Récupération du film via Astro props
+const { film } = Astro.props;
+
+if (!film) {
+    throw new Error("Film non trouvé");
+}
+
+// Définition des métadonnées de la page
+const title = film.titre_film;
+const description =
+    (film.synopsis_film || film.description_film || "").substring(0, 150) +
+    "...";
+
+// 📌 Vérification et ajout d’une image par défaut
+const imageUrl = film.affiche_film
+    ? `http://127.0.0.1:8090/api/files/Films/${film.id}/${film.affiche_film}`
+    : "/placeholder.jpg";
+
+// 📌 Vérification et transformation de l'URL YouTube
+let youtubeUrl = "";
+if (film.bande_annonce_film) {
+    const videoId = film.bande_annonce_film.split("v=")[1]?.split("&")[0]; // Extraction de l'ID de la vidéo
+    youtubeUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+}
+
+// 📌 Récupération des informations de l'invité associé
+let invite = null;
+if (film.invite_associe && typeof film.invite_associe === "string") {
+    invite = await getInviteById(film.invite_associe);
+} else if (film.invite_associe) {
+    invite = film.invite_associe;
+}
+---
+
+<LayoutWithHero
+    title={title}
+    description={description}
+    subTitle="Détails du film"
+    src={imageUrl || "/placeholder.jpg"}
+    srcDesktop={imageUrl || "/placeholder.jpg"}
+    alt={`Affiche de ${title}`}
+>
+    <Fragment slot="content">
+        <div class="container mx-auto px-4 py-8">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden md:flex">
+                <!-- Affiche -->
+                <div class="md:w-1/3 lg:w-1/4 p-4">
+                    <div class="aspect-[2/3]">
+                        <ImagePB
+                            record={film}
+                            field="affiche_film"
+                            alt={`Affiche de ${title}`}
+                            classPicture="w-full h-full"
+                            classImg="w-full h-full object-cover"
+                        />
+                    </div>
+                </div>
+
+                <!-- Détails -->
+                <div class="md:w-2/3 lg:w-3/4 p-6">
+                    <h1 class="text-3xl font-bold mb-4">{film.titre_film}</h1>
+
+                    <!-- Badges -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {
+                            film.lieu_film && (
+                                <div class="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                    {film.lieu_film}
+                                </div>
+                            )
+                        }
+                        {
+                            film.duree_film && (
+                                <div class="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                    {film.duree_film} min
+                                </div>
+                            )
+                        }
+                        {
+                            film.langue_film && (
+                                <div class="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                    {film.langue_film}
+                                </div>
+                            )
+                        }
+                        {
+                            film.annee_sortie_film && (
+                                <div class="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                    {film.annee_sortie_film}
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <!-- Informations du film -->
+                    <div class="space-y-4 mb-6">
+                        {
+                            film.realisateur_film && (
+                                <div>
+                                    <h4 class="text-lg font-semibold">
+                                        Réalisateur
+                                    </h4>
+                                    <p>{film.realisateur_film}</p>
+                                </div>
+                            )
+                        }
+
+                        {
+                            film.liste_acteurs_film && (
+                                <div>
+                                    <h4 class="text-lg font-semibold">
+                                        Acteurs principaux
+                                    </h4>
+                                    <p>{film.liste_acteurs_film}</p>
+                                </div>
+                            )
+                        }
+
+                        {
+                            film.production_film && (
+                                <div>
+                                    <h4 class="text-lg font-semibold">
+                                        Production
+                                    </h4>
+                                    <p>{film.production_film}</p>
+                                </div>
+                            )
+                        }
+
+                        {
+                            film.synopsis_film && (
+                                <div>
+                                    <h4 class="text-lg font-semibold">
+                                        Synopsis
+                                    </h4>
+                                    <p class="text-gray-700">
+                                        {film.synopsis_film}
+                                    </p>
+                                </div>
+                            )
+                        }
+
+                        {
+                            invite && (
+                                <div>
+                                    <h4 class="text-lg font-semibold">
+                                        Invité associé
+                                    </h4>
+                                    <p class="text-gray-700">
+                                        {invite.prenom_invite}{" "}
+                                        {invite.nom_invite}
+                                    </p>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <!-- Bouton favori -->
+                    <button
+                        id="favorite-toggle"
+                        data-id={film.id}
+                        class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    >
+                        <svg
+                            class="w-5 h-5 favorite-icon text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                            ></path>
+                        </svg>
+                        <span id="favorite-text">Ajouter aux favoris</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bande annonce (YouTube) -->
+            {
+                youtubeUrl && (
+                    <div class="p-6 border-t">
+                        <h2 class="text-xl font-semibold mb-4">
+                            Bande annonce
+                        </h2>
+                        <div class="aspect-video w-full max-w-3xl mx-auto">
+                            <iframe
+                                src={youtubeUrl}
+                                class="w-full h-full"
+                                frameborder="0"
+                                allowfullscreen
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            />
+                        </div>
+                    </div>
+                )
+            }
+
+            <!-- Bouton retour -->
+            <div class="p-6 border-t">
+                <a
+                    href="/films"
+                    class="inline-flex items-center gap-2 text-blue-600 hover:underline"
+                >
+                    <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour à la liste des films
+                </a>
+            </div>
+        </div>
+    </Fragment>
+</LayoutWithHero>

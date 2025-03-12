@@ -104,3 +104,12 @@ export async function logoutUser() {
     console.log("Déconnexion réussie !");
 }
 
+// recup un invite
+export async function oneGuest(id) {
+    try {
+        return await pb.collection('Invites').getOne(id);
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l\'invité:', error);
+        return null;
+    }
+}

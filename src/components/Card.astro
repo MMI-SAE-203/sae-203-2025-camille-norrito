@@ -25,6 +25,15 @@ const { ...film } = Astro.props;
             {film.titre_film}
         </h4>
 
+        <!-- Genre du film -->
+        {
+            film.genre_film && (
+                <p class="text-sm font-semibold text-purple mb-2">
+                    {film.genre_film}
+                </p>
+            )
+        }
+
         <!-- Lieu et date du film -->
         <p class="text-sm font-sans text-gray-600 mb-3">
             {film.lieu_film} — {formatDate(film.date_heure_film)}
@@ -32,7 +41,10 @@ const { ...film } = Astro.props;
 
         <!-- Lien vers plus d'infos -->
         <div class="mt-auto pt-2">
-            <a href="#" class="text-pink-600 hover:underline font-medium">
+            <a
+                href={`/films/${film.id}`}
+                class="text-pink-600 hover:underline font-medium"
+            >
                 Plus d'info
             </a>
         </div>

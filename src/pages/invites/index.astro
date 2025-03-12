@@ -1,0 +1,161 @@
+---
+import LayoutWithHero from "../../layouts/LayoutWithHero.astro";
+import ImgHero from "../../assets/img/headerPages.webp";
+import ImgHeroDesktop from "../../assets/img/headerPagesDesktop.webp";
+import CardInvite from "../../components/CardInvite.astro"; // On garde la même structure de carte
+import { getAllInvites } from "../../../backend/pocketbase/backend.mjs";
+
+const title = "Les invités";
+const subTitle = "Rencontrez nos personnalités";
+const description =
+    "Découvrez les acteurs, réalisateurs et intervenants présents durant le festival.";
+
+const invites = await getAllInvites();
+console.log("Invités récupérés :", invites);
+
+// Extraire les rôles uniques pour le filtrage
+const roles = [
+    ...new Set(invites.map((invite) => invite.role_invite).filter(Boolean)),
+];
+const rolesJson = JSON.stringify(roles);
+
+// Convertir les invités en JSON pour le JavaScript
+const invitesJson = JSON.stringify(invites);
+---
+
+<LayoutWithHero
+    title={title}
+    description={description}
+    subTitle={subTitle}
+    src={ImgHero}
+    srcDesktop={ImgHeroDesktop}
+    alt="hero"
+    classLayout="h-65"
+>
+    <!-- Contenu principal -->
+    <Fragment slot="content">
+        <p>Découvrez les invités prestigieux du festival.</p>
+
+        <!-- Section avec boutons et filtres -->
+        <div class="my-8">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <button
+                    id="show-all"
+                    class="bg-(--color-beige) text-(--color-pink) px-4 py-2 rounded-lg shadow transition duration-300"
+                >
+                    Afficher tous les invités
+                </button>
+
+                <!-- Sélection du rôle -->
+                <select
+                    id="filter-role"
+                    class="bg-(--color-purple) text-(--color-white) px-4 py-2 rounded-lg shadow transition duration-300"
+                >
+                    <option value="all">Tous les rôles</option>
+                    {
+                        roles.map((role) => (
+                            <option value={role}>
+                                {role.charAt(0).toUpperCase() + role.slice(1)}
+                            </option>
+                        ))
+                    }
+                </select>
+            </div>
+
+            <!-- Affichage des invités -->
+            <div
+                id="invites-grid"
+                class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 my-24 mx-auto container"
+            >
+                {
+                    invites.length > 0 ? (
+                        invites.map((invite) => (
+                            <div
+                                class="w-full sm:max-w-none lg:max-w-[350px] mx-auto relative invite-card"
+                                data-role={invite.role_invite}
+                                data-id={invite.id}
+                            >
+                                <CardInvite {...invite} />
+                            </div>
+                        ))
+                    ) : (
+                        <p class="col-span-full text-center">
+                            Aucun invité à afficher.
+                        </p>
+                    )
+                }
+            </div>
+        </div>
+    </Fragment>
+</LayoutWithHero>
+
+<script define:vars={{ invitesJson, rolesJson }}>
+    let invitesData = JSON.parse(invitesJson);
+    let rolesData = JSON.parse(rolesJson);
+    let selectedRole = "all";
+
+    document.addEventListener("DOMContentLoaded", function () {
+        attachEventListeners();
+    });
+
+    function attachEventListeners() {
+        // Bouton pour afficher tous les invités
+        document
+            .getElementById("show-all")
+            .addEventListener("click", function () {
+                document.getElementById("filter-role").value = "all";
+                selectedRole = "all";
+                filterInvites();
+            });
+
+        // Sélecteur de rôle
+        document
+            .getElementById("filter-role")
+            .addEventListener("change", function (event) {
+                selectedRole = event.target.value;
+                filterInvites();
+            });
+    }
+
+    function filterInvites() {
+        removeNoInvitesMessage();
+
+        const inviteElements = Array.from(
+            document.querySelectorAll(".invite-card"),
+        );
+        let visibleCount = 0;
+
+        inviteElements.forEach((element) => {
+            const role = element.getAttribute("data-role");
+
+            if (selectedRole === "all" || role === selectedRole) {
+                element.classList.remove("hidden");
+                visibleCount++;
+            } else {
+                element.classList.add("hidden");
+            }
+        });
+
+        // Afficher un message si aucun invité ne correspond aux critères
+        if (visibleCount === 0) {
+            const message = document.createElement("p");
+            message.className = "col-span-full text-center";
+
+            if (selectedRole !== "all") {
+                message.textContent = `Aucun invité avec le rôle "${selectedRole}".`;
+            } else {
+                message.textContent = "Aucun invité à afficher.";
+            }
+
+            document.getElementById("invites-grid").appendChild(message);
+        }
+    }
+
+    // Fonction pour supprimer le message "Aucun invité"
+    function removeNoInvitesMessage() {
+        const message = document.querySelector("#invites-grid .col-span-full");
+        if (message) {
+            message.remove();
+        }
+    }
+</script>
