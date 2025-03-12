@@ -66,4 +66,9 @@
     .grille {
         @apply px-6 lg:grid lg:grid-cols-(--my-grid) lg:justify-center lg:gap-12;
     }
+
+    .noscroll {
+        overflow: hidden;
+    }
+    
 }

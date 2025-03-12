@@ -1,20 +1,25 @@
 ---
 import Logo from "../assets/icons/logo.svg";
+import IconFacebook from "../assets/icons/facebookclair.svg";
+import IconInstagram from "../assets/icons/instagramclair.svg";
+import IconTwitter from "../assets/icons/twitterclair.svg";
+import IconYoutube from "../assets/icons/youtubeclair.svg";
 ---
 
 <header
-    class="px-6 py-4 fixed z-10 w-full flex items-stretch justify-between transition-all duration-300 ease-in-out bg-lilac"
+    class="px-6 py-4 fixed z-10 w-full flex items-stretch justify-between transition-all duration-300 ease-in-out bg-black lg:py-0"
     id="header"
 >
-    <div class="flex items-center relative z-20">
+    <div class="flex items-center relative z-20 lg:flex-row-reverse">
         <a href="/" aria-label="Accueil">
-            <Logo />
+            <Logo class="w-32 h-16" />
         </a>
     </div>
 
     <div>
+        <!-- Bouton menu visible uniquement en mobile -->
         <button
-            class="group relative z-20 flex h-6 w-8 flex-col justify-between *:h-[2px] *:w-full *:bg-gray-500 *:transition-all *:duration-300 *:ease"
+            class="group relative z-20 flex h-6 w-8 flex-col justify-between *:h-[2px] *:w-full *:bg-gray-300 *:transition-all *:duration-300 *:ease lg:hidden"
             id="menu-btn"
             aria-label="Menu"
             aria-controls="menu"
@@ -29,30 +34,49 @@ import Logo from "../assets/icons/logo.svg";
             ></span>
         </button>
 
+        <!--  Menu principal -->
         <nav
-            class="visible fixed z-10 inset-0 bg-(--color-indigo) text-2xl text-white opacity-100 transition-all duration-300 ease-in-out aria-hidden:invisible aria-hidden:opacity-0"
+            class="fixed z-10 inset-0 bg-darkpurple text-2xl text-white opacity-100 transition-all duration-300 ease-in-out max-lg:hidden lg:relative lg:flex lg:items-center lg:bg-transparent lg:text-sm lg:font-bold lg:uppercase lg:tracking-wide lg:text-white lg:opacity-100"
             id="menu"
-            aria-hidden="true"
         >
-            <ul class="mt-[25vh] mx-16">
+            <ul
+                class="mt-12 mx-16 pt-12 lg:m-0 lg:flex *:relative *:overflow-hidden *:lg:before:absolute *:lg:before:bottom-0 *:lg:before:left-0 *:lg:before:h-2 *:lg:before:w-full *:lg:before:translate-y-2 *:lg:before:bg-black *:lg:before:transition-all *:lg:before:duration-300 *:lg:before:ease-in-out *:lg:hover:before:translate-y-0"
+            >
                 <li>
-                    <a class="block px-5 py-4" href="/conservatoire"
-                        >Le conservatoire</a
+                    <a class="block px-5 py-4 lg:py-4 text-center" href="#"
+                        >Le festival</a
                     >
                 </li>
                 <li>
-                    <a class="block px-5 py-4" href="/enseignements"
-                        >Enseignements</a
+                    <a class="block px-5 py-4 lg:py-4 text-center" href="#"
+                        >Les invités</a
                     >
                 </li>
                 <li>
-                    <a class="block px-5 py-4" href="/agenda/1">Agenda</a>
+                    <a class="block px-5 py-4 lg:py-4 text-center" href="#"
+                        >Infos pratiques</a
+                    >
                 </li>
                 <li>
-                    <a class="block px-5 py-4" href="/contact">Contact</a>
+                    <a class="block px-5 py-4 lg:py-4 text-center" href="#"
+                        >Programmation</a
+                    >
                 </li>
                 <li>
-                    <a class="block px-5 py-4" href="/inscription">S'inscrire</a
+                    <a class="block px-5 py-4 lg:py-4 text-center" href="#"
+                        >Les films</a
+                    >
+                </li>
+                <li>
+                    <a class="block px-5 py-4 lg:py-4 text-center" href="#"
+                        >Les activités</a
+                    >
+                </li>
+
+                <li>
+                    <a
+                        class="block px-5 py-4 lg:py-4 lg:bg-white lg:text-black lg:px-8 text-center"
+                        href="#">Contact</a
                     >
                 </li>
             </ul>
@@ -61,20 +85,45 @@ import Logo from "../assets/icons/logo.svg";
 </header>
 
 <script>
-    // On cible les éléments à modifier
-    const toggle = document.querySelector("#menu-btn");
-    const nav = document.querySelector("#menu");
-    const page = document.body;
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.querySelector("#menu-btn");
+        const nav = document.querySelector("#menu");
+        const page = document.body;
 
-    // Vérifier si les éléments existent avant d'ajouter l'événement
-    if (toggle && nav) {
-        toggle.addEventListener("click", () => {
-            const isOpen = toggle.ariaExpanded === "true";
-            const isClosed = !isOpen;
-            // Mise à jour des attributs ARIA pour accessibilité
-            toggle.ariaExpanded = String(isClosed);
-            nav.ariaHidden = String(isOpen);
-            page.classList.toggle("noscroll", isClosed);
+        if (toggle && nav) {
+            toggle.addEventListener("click", () => {
+                const isOpen = toggle.getAttribute("aria-expanded") === "true";
+                toggle.setAttribute("aria-expanded", String(!isOpen));
+                nav.classList.toggle("max-lg:hidden", isOpen);
+                page.classList.toggle("noscroll", !isOpen);
+            });
+        }
+
+        /* 🎯 Cacher le header au scroll */
+        const navBar = document.querySelector("#header");
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+        const offset = 205;
+
+        function handleScroll() {
+            const currentScrollY = window.scrollY;
+            navBar.classList.toggle("bg-white", currentScrollY > offset);
+
+            if (currentScrollY > lastScrollY && currentScrollY > offset) {
+                navBar.classList.add("-translate-y-full");
+            } else {
+                navBar.classList.remove("-translate-y-full");
+            }
+
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+
+        window.addEventListener("scroll", () => {
+            if (!ticking) {
+                window.requestAnimationFrame(handleScroll);
+                ticking = true;
+            }
         });
-    }
+    });
 </script>
