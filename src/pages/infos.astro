@@ -1,0 +1,18 @@
+---
+import LayoutWithHero from "../layouts/LayoutWithHero.astro";
+import ImgHero from "../assets/img/headerPages.webp";
+import ImgHeroDesktop from "../assets/img/headerPagesDesktop.webp";
+
+const title = "Infos pratiques";
+---
+
+<LayoutWithHero
+    title={title}
+    src={ImgHero}
+    srcDesktop={ImgHeroDesktop}
+    alt="hero"
+    classLayout="h-65"
+>
+    <h1 class="font-title-orb text-pink">Sci-fi Stival</h1>
+    <p class="h-screen">Texte standard</p>
+</LayoutWithHero>

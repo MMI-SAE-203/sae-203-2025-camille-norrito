@@ -10,12 +10,13 @@ const {
     srcDesktop,
     alt,
     classContent = "main-content max-w-2xl mx-6 my-16 lg:mx-auto",
+    classLayout,
 } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
     <!-- Image en plein écran -->
-    <div class="relative min-h-screen">
+    <div class="relative" class:list={classLayout}>
         <picture class="absolute inset-0 w-full h-full">
             <source srcset={srcDesktop.src} media="(min-width: 768px)" />
             <img
@@ -24,14 +25,26 @@ const {
                 class="duotone w-full h-full object-cover"
             />
         </picture>
+
+        <!-- 🔽 Titre et sous-titre positionnés aux 3/4 de l'image -->
+        <div
+            class="absolute bottom-[10%] md:bottom-[10%] left-1/2 -translate-x-1/2 text-pink px-6 text-center max-w-[100%] md:max-w-[90%]"
+        >
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold">{title}</h1>
+            {
+                subTitle && (
+                    <h2 class=" font-sans font-extrabold  mt-2 md:mt-4">
+                        {subTitle}
+                    </h2>
+                )
+            }
+        </div>
     </div>
 
-    <div class="flex flex-col items-center text-white px-6 py-20">
-        <h1 class="text-4xl lg:text-6xl font-bold text-center">{title}</h1>
-        {subTitle && <h2 class="font-bold uppercase mt-4">{subTitle}</h2>}
-    </div>
+    <!-- Ajout d'un espace sous l'image pour éviter le chevauchement -->
+    <div class="h-12 md:h-20"></div>
 
-    <!-- Contenu principal sous le titre -->
+    <!-- Contenu principal sous le Hero -->
     <div class={classContent}>
         <slot name="content" />
     </div>
