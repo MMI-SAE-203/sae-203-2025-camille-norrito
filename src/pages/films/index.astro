@@ -11,6 +11,17 @@ const description = "Découvrez tous les films projetés durant le festival.";
 
 const films = await getAllFilms();
 console.log(" Films récupérés :", films);
+
+// Nous ajoutons un flag favori à chaque film s'il n'existe pas déjà
+const filmsWithFavorites = films.map((film) => {
+    if (!film.hasOwnProperty("favori")) {
+        return { ...film, favori: false };
+    }
+    return film;
+});
+
+// Convertir les films en JSON pour les passer au frontend
+const filmsJson = JSON.stringify(filmsWithFavorites);
 ---
 
 <LayoutWithHero
@@ -26,17 +37,235 @@ console.log(" Films récupérés :", films);
     <Fragment slot="content">
         <p>Découvrez tous les films projetés durant le festival.</p>
 
-        <!-- Affichage des films en colonne sur mobile, grille sur desktop -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-24">
-            {
-                films.length > 0 ? (
-                    films.map((film) => <Card {...film} />)
-                ) : (
-                    <p class="col-span-full text-center">
-                        Aucun film à afficher.
-                    </p>
-                )
-            }
+        <!-- Section avec boutons et films -->
+        <div class="my-8">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <button
+                    id="show-all"
+                    class="bg-(--color-beige) text-(--color-pink) px-4 py-2 rounded-lg shadow transition duration-300"
+                >
+                    Afficher tous les films
+                </button>
+                <button
+                    id="show-favorites"
+                    class="bg-(--color-beige) text-(--color-pink) px-4 py-2 rounded-lg shadow transition duration-300"
+                >
+                    Afficher mes favoris
+                </button>
+                <button
+                    id="sort-date"
+                    class="bg-(--color-darkpurple) text-(--color-white) px-4 py-2 rounded-lg shadow transition duration-300 flex items-center justify-center gap-2"
+                >
+                    <span>Trier par date</span>
+                    <span id="sort-icon">↑</span>
+                </button>
+            </div>
+
+            <!-- Affichage des films en colonne sur mobile, grille sur desktop -->
+            <div
+                id="films-grid"
+                class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 my-24 mx-auto container"
+            >
+                {
+                    filmsWithFavorites.length > 0 ? (
+                        filmsWithFavorites.map((film) => (
+                            <div class="w-full sm:max-w-none lg:max-w-[350px] mx-auto relative">
+                                <!-- Bouton favori -->
+                                <div class="absolute top-2 right-2 z-10">
+                                    <button 
+                                        data-id={film.id} 
+                                        class="favorite-toggle p-2 bg-white bg-opacity-70 rounded-full shadow"
+                                    >
+                                        <svg 
+                                            class="w-6 h-6 favorite-icon" 
+                                            fill="currentColor" 
+                                            viewBox="0 0 20 20" 
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            data-favori={film.favori}
+                                        >
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <Card {...film} />
+                            </div>
+                        ))
+                    ) : (
+                        <p class="col-span-full text-center">
+                            Aucun film à afficher.
+                        </p>
+                    )
+                }
+            </div>
         </div>
     </Fragment>
 </LayoutWithHero>
+
+<script define:vars={{ filmsJson }}>
+    // Conversion de la chaîne JSON en objet JavaScript
+    let filmsData = JSON.parse(filmsJson);
+    let showOnlyFavorites = false;
+    let sortDirection = "asc";
+
+    // Au chargement du DOM, initialiser les icônes de favoris
+    document.addEventListener("DOMContentLoaded", function () {
+        updateFavoriteIcons();
+        attachEventListeners();
+    });
+
+    // Mettre à jour les icônes de favoris selon leur état
+    function updateFavoriteIcons() {
+        document.querySelectorAll(".favorite-icon").forEach((icon) => {
+            const isFavorite = icon.getAttribute("data-favori") === "true";
+            if (isFavorite) {
+                icon.classList.add("text-yellow-500");
+                icon.classList.remove("text-gray-400");
+            } else {
+                icon.classList.add("text-gray-400");
+                icon.classList.remove("text-yellow-500");
+            }
+        });
+    }
+
+    // Attacher les écouteurs d'événements
+    function attachEventListeners() {
+        // Bouton pour afficher tous les films
+        document.getElementById("show-all").addEventListener("click", function () {
+            showOnlyFavorites = false;
+            filterFilms();
+            updateButtonStyles();
+        });
+
+        // Bouton pour afficher uniquement les favoris
+        document.getElementById("show-favorites").addEventListener("click", function () {
+            showOnlyFavorites = true;
+            filterFilms();
+            updateButtonStyles();
+        });
+
+        // Bouton pour trier par date
+        document.getElementById("sort-date").addEventListener("click", sortFilmsByDate);
+
+        // Boutons de favoris
+        document.querySelectorAll(".favorite-toggle").forEach((button) => {
+            button.addEventListener("click", function () {
+                const filmId = this.getAttribute("data-id");
+                toggleFavorite(filmId);
+            });
+        });
+    }
+
+    // Mettre à jour les styles des boutons
+    function updateButtonStyles() {
+        if (showOnlyFavorites) {
+            document.getElementById("show-favorites").classList.add("bg-white");
+            document.getElementById("show-favorites").classList.remove("bg-gray-300");
+            document.getElementById("show-all").classList.add("bg-gray-300");
+            document.getElementById("show-all").classList.remove("bg-white");
+        } else {
+            document.getElementById("show-all").classList.add("bg-white");
+            document.getElementById("show-all").classList.remove("bg-gray-300");
+            document.getElementById("show-favorites").classList.add("bg-gray-300");
+            document.getElementById("show-favorites").classList.remove("bg-white");
+        }
+    }
+
+    // Fonction pour trier les films par date
+    function sortFilmsByDate() {
+        sortDirection = sortDirection === "asc" ? "desc" : "asc";
+        document.getElementById("sort-icon").textContent = sortDirection === "asc" ? "↑" : "↓";
+
+        const filmElements = Array.from(document.getElementById("films-grid").children);
+        
+        // Exclure le message "aucun film" si présent
+        const validFilmElements = filmElements.filter(el => !el.classList.contains("col-span-full"));
+        
+        validFilmElements.sort((a, b) => {
+            const idA = a.querySelector(".favorite-toggle").getAttribute("data-id");
+            const idB = b.querySelector(".favorite-toggle").getAttribute("data-id");
+            
+            const filmA = filmsData.find(film => film.id === idA);
+            const filmB = filmsData.find(film => film.id === idB);
+            
+            if (!filmA || !filmB) return 0;
+            
+            const dateA = new Date(filmA.date_heure_film);
+            const dateB = new Date(filmB.date_heure_film);
+            
+            return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+        });
+        
+        // Réinjecter les éléments triés
+        const filmsGrid = document.getElementById("films-grid");
+        filmsGrid.innerHTML = "";
+        
+        if (validFilmElements.length === 0) {
+            const message = document.createElement("p");
+            message.className = "col-span-full text-center";
+            message.textContent = "Aucun film à afficher.";
+            filmsGrid.appendChild(message);
+        } else {
+            validFilmElements.forEach(element => {
+                filmsGrid.appendChild(element);
+            });
+        }
+    }
+
+    // Fonction pour basculer l'état de favori d'un film
+    function toggleFavorite(id) {
+        const filmIndex = filmsData.findIndex((film) => film.id === id);
+        if (filmIndex !== -1) {
+            filmsData[filmIndex].favori = !filmsData[filmIndex].favori;
+            
+            // Mettre à jour l'icône
+            const icon = document.querySelector(`button[data-id="${id}"] .favorite-icon`);
+            icon.setAttribute("data-favori", filmsData[filmIndex].favori);
+            
+            if (filmsData[filmIndex].favori) {
+                icon.classList.add("text-yellow-500");
+                icon.classList.remove("text-gray-400");
+            } else {
+                icon.classList.add("text-gray-400");
+                icon.classList.remove("text-yellow-500");
+            }
+            
+            // Si on est en mode "favoris uniquement", mettre à jour l'affichage
+            if (showOnlyFavorites) {
+                filterFilms();
+            }
+        }
+    }
+
+    // Fonction pour filtrer les films selon les favoris
+    function filterFilms() {
+        const filmElements = Array.from(document.getElementById("films-grid").children);
+        
+        filmElements.forEach(element => {
+            if (element.classList.contains("col-span-full")) {
+                element.remove();
+                return;
+            }
+            
+            const id = element.querySelector(".favorite-toggle").getAttribute("data-id");
+            const film = filmsData.find(f => f.id === id);
+            
+            if (!film) return;
+            
+            if (showOnlyFavorites && !film.favori) {
+                element.classList.add("hidden");
+            } else {
+                element.classList.remove("hidden");
+            }
+        });
+        
+        // Vérifier s'il y a des films à afficher
+        const visibleFilms = filmElements.filter(el => !el.classList.contains("hidden") && !el.classList.contains("col-span-full"));
+        
+        if (visibleFilms.length === 0) {
+            const message = document.createElement("p");
+            message.className = "col-span-full text-center";
+            message.textContent = showOnlyFavorites ? "Vous n'avez pas encore de films favoris." : "Aucun film à afficher.";
+            document.getElementById("films-grid").appendChild(message);
+        }
+    }
+</script>

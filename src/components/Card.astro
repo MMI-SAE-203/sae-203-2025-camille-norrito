@@ -4,28 +4,37 @@ import ImagePB from "./ImagePB.astro";
 const { ...film } = Astro.props;
 ---
 
-<article class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
-    <!-- Affiche du film -->
-    <ImagePB
-        record={film}
-        field="affiche_film"
-        alt="image"
-        classPicture="duotone object-cover min-h-[40dvh] h-full w-full col-start-1 row-start-1 col-span-2 row-span-2 group-hover:before:bg-black"
-        classImg="group-hover:grayscale-0 group-hover:mix-blend-normal"
-    />
+<article
+    class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md lg:max-w-[350px] h-full mx-auto"
+>
+    <!-- Conteneur d'image avec ratio fixe -->
+    <div class="relative w-full aspect-[2/3] overflow-hidden">
+        <ImagePB
+            record={film}
+            field="affiche_film"
+            alt={`Affiche du film ${film.titre_film}`}
+            classPicture="w-full h-full duotone"
+            classImg="w-full h-full object-cover group-hover:grayscale-0 group-hover:mix-blend-normal"
+        />
+    </div>
 
-    <!-- Titre du film -->
-    <h4 class="p-4 text-lg font-sans font-bold text-black">
-        {film.titre_film}
-    </h4>
+    <!-- Zone de contenu textuel - fond blanc -->
+    <div class="flex-grow bg-white p-4 flex flex-col">
+        <!-- Titre du film -->
+        <h4 class="text-lg font-sans font-bold text-black mb-2 line-clamp-2">
+            {film.titre_film}
+        </h4>
 
-    <!-- Lieu et date du film -->
-    <p class="p-4 text-sm font-sans text-gray-600">
-        {film.lieu_film} — {formatDate(film.date_heure_film)}
-    </p>
+        <!-- Lieu et date du film -->
+        <p class="text-sm font-sans text-gray-600 mb-3">
+            {film.lieu_film} — {formatDate(film.date_heure_film)}
+        </p>
 
-    <!-- Lien vers plus d'infos -->
-    <div class="p-4 mt-2">
-        <a href="#" class="text-pink-600 hover:underline"> Plus d'info </a>
+        <!-- Lien vers plus d'infos -->
+        <div class="mt-auto pt-2">
+            <a href="#" class="text-pink-600 hover:underline font-medium">
+                Plus d'info
+            </a>
+        </div>
     </div>
 </article>

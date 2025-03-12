@@ -107,7 +107,7 @@ import IconYoutube from "../assets/icons/youtubeclair.svg";
 
         function handleScroll() {
             const currentScrollY = window.scrollY;
-            navBar.classList.toggle("bg-lilac", currentScrollY > offset);
+            navBar.classList.toggle("bg-zinc-600", currentScrollY > offset);
 
             if (currentScrollY > lastScrollY && currentScrollY > offset) {
                 navBar.classList.add("-translate-y-full");

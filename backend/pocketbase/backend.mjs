@@ -103,3 +103,4 @@ export async function logoutUser() {
     pb.authStore.clear();
     console.log("Déconnexion réussie !");
 }
+

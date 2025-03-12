@@ -1,13 +1,14 @@
 ---
 import { Picture } from "astro:assets";
 import { pb } from "../../backend/pocketbase/backend.mjs";
+
 const {
     record,
     field = "imgUrl",
     alt,
-    classPicture,
-    classImg,
-    thumb = "1024x1150",
+    classPicture = "",
+    classImg = "",
+    thumb = "600x900",
 } = Astro.props;
 
 const imageUrl = record?.[field]
@@ -18,7 +19,9 @@ const imageUrl = record?.[field]
 {
     imageUrl && (
         <Picture
-            pictureAttributes={{ class: classPicture }}
+            pictureAttributes={{
+                class: `w-full h-auto aspect-[2/3] ${classPicture}`,
+            }}
             class={classImg}
             inferSize={true}
             formats={["avif", "webp"]}
