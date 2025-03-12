@@ -2,17 +2,218 @@
 import LayoutWithHero from "../layouts/LayoutWithHero.astro";
 import ImgHero from "../assets/img/headerPages.webp";
 import ImgHeroDesktop from "../assets/img/headerPagesDesktop.webp";
+import Card from "../components/Card.astro";
+import CardActivite from "../components/CardActivite.astro";
+import { getAllFilms } from "../../backend/pocketbase/backend.mjs";
+import { getAllActivities } from "../../backend/pocketbase/backend.mjs";
 
-const title = "Proramme";
+const title = "Programmation";
+const subTitle = "Découvrez les films et activités";
+const description =
+    "Retrouvez tous les films projetés et les activités du festival.";
+
+// 📌 Récupérer les données des films et activités
+const films = await getAllFilms();
+const activites = await getAllActivities();
+
+// 📌 Ajout d'un flag favori si non existant
+const filmsWithFavorites = films.map((film) => ({
+    ...film,
+    favori: film.hasOwnProperty("favori") ? film.favori : false,
+}));
+
+// 📌 Extraction des genres uniques pour le filtrage
+const genres = [
+    ...new Set(
+        filmsWithFavorites.map((film) => film.genre_film).filter(Boolean),
+    ),
+];
+const genresJson = JSON.stringify(genres);
+
+// 📌 Extraction des types d'activités uniques pour le filtrage
+const activityTypes = [...new Set(activites.map((a) => a.type_activite))];
+
+// 📌 Conversion en JSON pour le frontend
+const filmsJson = JSON.stringify(filmsWithFavorites);
+const activitesJson = JSON.stringify(activites);
+const activityTypesJson = JSON.stringify(activityTypes);
 ---
 
 <LayoutWithHero
     title={title}
+    description={description}
+    subTitle={subTitle}
     src={ImgHero}
     srcDesktop={ImgHeroDesktop}
     alt="hero"
     classLayout="h-65"
 >
-    <h1 class="font-title-orb text-pink">Sci-fi Stival</h1>
-    <p class="h-screen">Texte standard</p>
+    <Fragment slot="content">
+        <p class="text-center">
+            Retrouvez tous les films et activités organisés durant le festival.
+        </p>
+
+        <!-- 🎬 FILMS -->
+        <section class="mt-12">
+            <h2 class="text-2xl font-bold text-center mb-6"> Films</h2>
+
+            <!-- Filtres pour les films -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button id="show-all-films" class="filter-btn"
+                    >Afficher tous les films</button
+                >
+                <button id="show-favorites-films" class="filter-btn"
+                    >Afficher mes favoris</button
+                >
+                <button id="sort-date-films" class="filter-btn"
+                    >Trier par date ⬆</button
+                >
+            </div>
+
+            <!-- 🎭 Filtres par genre -->
+            <div class="mb-8 text-center">
+                <h4 class="text-lg font-semibold mb-3">Filtrer par genre</h4>
+                <div
+                    id="genre-filters"
+                    class="flex flex-wrap justify-center gap-2"
+                >
+                    <button data-genre="all" class="genre-filter active"
+                        >Tous</button
+                    >
+                    {
+                        genres.map((genre) => (
+                            <button data-genre={genre} class="genre-filter">
+                                {genre}
+                            </button>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- 🎬 Affichage des films -->
+            <div id="films-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                {
+                    filmsWithFavorites.length > 0 ? (
+                        filmsWithFavorites.map((film) => (
+                            <div
+                                class="w-full mx-auto relative"
+                                data-genre={film.genre_film}
+                            >
+                                <div class="absolute top-2 right-2 z-10">
+                                    <button
+                                        data-id={film.id}
+                                        class="favorite-toggle p-2 bg-white bg-opacity-70 rounded-full shadow"
+                                    >
+                                        <svg
+                                            class="w-6 h-6 favorite-icon"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <Card {...film} />
+                            </div>
+                        ))
+                    ) : (
+                        <p class="col-span-full text-center">
+                            Aucun film à afficher.
+                        </p>
+                    )
+                }
+            </div>
+        </section>
+
+        <!-- 🎭 ACTIVITÉS -->
+        <section class="mt-16">
+            <h2 class="text-2xl font-bold text-center mb-6"> Activités</h2>
+
+            <!-- Filtres pour les activités -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button id="show-all-activities" class="filter-btn"
+                    >Afficher toutes les activités</button
+                >
+                <button id="sort-date-activities" class="filter-btn"
+                    >Trier par date ⬆</button
+                >
+            </div>
+
+            <!-- 🏷️ Filtres par type -->
+            <div class="mb-8 text-center">
+                <h4 class="text-lg font-semibold mb-3">Filtrer par type</h4>
+                <div
+                    id="type-filters"
+                    class="flex flex-wrap justify-center gap-2"
+                >
+                    <button data-type="all" class="type-filter active"
+                        >Tous</button
+                    >
+                    {
+                        activityTypes.map((type) => (
+                            <button data-type={type} class="type-filter">
+                                {type}
+                            </button>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- 🎭 Affichage des activités -->
+            <div
+                id="activities-grid"
+                class="grid grid-cols-2 sm:grid-cols-3 gap-6"
+            >
+                {
+                    activites.length > 0 ? (
+                        activites.map((activite) => (
+                            <CardActivite {...activite} />
+                        ))
+                    ) : (
+                        <p class="col-span-full text-center">
+                            Aucune activité à afficher.
+                        </p>
+                    )
+                }
+            </div>
+        </section>
+    </Fragment>
 </LayoutWithHero>
+
+<script
+    define:vars={{ filmsJson, activitesJson, genresJson, activityTypesJson }}
+>
+    // ⚡ Convertir JSON en JavaScript
+    let filmsData = JSON.parse(filmsJson);
+    let activitesData = JSON.parse(activitesJson);
+    let genres = JSON.parse(genresJson);
+    let activityTypes = JSON.parse(activityTypesJson);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        attachEventListeners();
+    });
+
+    function attachEventListeners() {
+        document
+            .getElementById("show-favorites-films")
+            .addEventListener("click", function () {
+                alert("Fonctionnalité à implémenter : Afficher les favoris.");
+            });
+
+        document
+            .getElementById("sort-date-films")
+            .addEventListener("click", function () {
+                alert(
+                    "Fonctionnalité à implémenter : Trier les films par date.",
+                );
+            });
+
+        document
+            .getElementById("sort-date-activities")
+            .addEventListener("click", function () {
+                alert(
+                    "Fonctionnalité à implémenter : Trier les activités par date.",
+                );
+            });
+    }
+</script>
