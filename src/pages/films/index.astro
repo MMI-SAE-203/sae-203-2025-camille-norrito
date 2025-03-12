@@ -1,0 +1,42 @@
+---
+import LayoutWithHero from "../../layouts/LayoutWithHero.astro";
+import ImgHero from "../../assets/img/headerPages.webp";
+import ImgHeroDesktop from "../../assets/img/headerPagesDesktop.webp";
+import Card from "../../components/Card.astro";
+import { getAllFilms } from "../../../backend/pocketbase/backend.mjs";
+
+const title = "Programme";
+const subTitle = "des Films";
+const description = "Découvrez tous les films projetés durant le festival.";
+
+const films = await getAllFilms();
+console.log(" Films récupérés :", films);
+---
+
+<LayoutWithHero
+    title={title}
+    description={description}
+    subTitle={subTitle}
+    src={ImgHero}
+    srcDesktop={ImgHeroDesktop}
+    alt="hero"
+    classLayout="h-65"
+>
+    <!-- Contenu principal -->
+    <Fragment slot="content">
+        <p>Découvrez tous les films projetés durant le festival.</p>
+
+        <!-- Affichage des films en colonne sur mobile, grille sur desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-24">
+            {
+                films.length > 0 ? (
+                    films.map((film) => <Card {...film} />)
+                ) : (
+                    <p class="col-span-full text-center">
+                        Aucun film à afficher.
+                    </p>
+                )
+            }
+        </div>
+    </Fragment>
+</LayoutWithHero>

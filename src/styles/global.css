@@ -43,7 +43,7 @@
     }
 
     h2 {
-    @apply text-xl lg:text-2xl xl:text-3xl font-title-sync font-normal;
+        @apply text-xl lg:text-2xl xl:text-3xl font-title-sync font-normal;
     }
 
 
@@ -52,7 +52,7 @@
     }
 
     h4 {
-        @apply text-lg font-extrabold font-title-sync font-extrabold;
+        @apply text-3xl lg:text-xl font-family font-semibold;
     }
 
     h5 {
