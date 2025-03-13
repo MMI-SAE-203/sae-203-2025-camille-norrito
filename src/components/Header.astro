@@ -98,12 +98,18 @@ import IconYoutube from "../assets/icons/youtubeclair.svg";
             toggle.addEventListener("click", () => {
                 const isOpen = toggle.getAttribute("aria-expanded") === "true";
                 toggle.setAttribute("aria-expanded", String(!isOpen));
-                nav.classList.toggle("max-lg:hidden", isOpen);
+
+                if (isOpen) {
+                    nav.classList.add("max-lg:hidden");
+                } else {
+                    nav.classList.remove("max-lg:hidden");
+                    nav.classList.add("bg-darkpurple");
+                }
                 page.classList.toggle("noscroll", !isOpen);
             });
         }
 
-        /* 🎯 Cacher le header au scroll */
+        /*  Cacher le header au scroll */
         const navBar = document.querySelector("#header");
         let lastScrollY = window.scrollY;
         let ticking = false;
