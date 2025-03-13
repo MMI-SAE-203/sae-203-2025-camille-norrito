@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
-const POCKETBASE_URL = "http://127.0.0.1:8090";
-const pb = new PocketBase('http://127.0.0.1:8090');
+// const POCKETBASE_URL = "http://127.0.0.1:8090";
+const pb = new PocketBase('https://pb-sae-203.camille-norrito.fr:443');
 export { pb };
 
 // Fonction retourne la liste des films triés par date de projection
@@ -114,8 +114,3 @@ export async function oneGuest(id) {
     }
 }
 
-//Fonction pour récupérer un invité par ID
-export async function getInviteById(id) {
-    const invite = await pb.collection("Invites").getOne(id);
-    return invite;
-}
