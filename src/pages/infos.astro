@@ -16,7 +16,6 @@ const title = "Infos Pratiques";
 >
     <Fragment slot="content">
         <section class="max-w-4xl mx-auto px-6 py-12 text-gray-800">
-
             <!-- Introduction -->
             <p class="text-lg text-center mb-8">
                 Le Sci-Fi' Stival se déroulera du <strong
@@ -25,115 +24,294 @@ const title = "Infos Pratiques";
                 aux Glacis de Belfort, un espace en plein air idéal pour accueillir
                 projections, concerts et ateliers. Situé en plein cœur de Belfort,
                 le Glacis est facilement accessible et offre un cadre convivial pour
-                profiter pleinement de l’événement.
+                profiter pleinement de l'événement.
             </p>
 
             <!-- Tarifs -->
-            <div class="bg-gray-200 p-6 rounded-lg shadow-md mb-8">
-                <h3 class="text-2xl font-semibold text-darkpurple">
-                    Pass 1 jour
-                </h3>
-                <p class="text-lg font-bold text-pink-500">15€</p>
-                <p>
-                    Accès à toutes les projections, ateliers et animations du
-                    jour choisi.
-                </p>
+            <div class="accordion-container space-y-4 mb-8">
+                <div x-data="{ open: true }" class="accordion">
+                    <button
+                        @click="open = !open"
+                        class="accordion-header w-full bg-darkpurple text-white p-4 rounded-t-lg flex justify-between items-center"
+                    >
+                        <h3 class="text-2xl font-semibold">Tarifs</h3>
+                        <svg
+                            class="w-6 h-6 transition-transform"
+                            :class="{'rotate-180': open}"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
 
-                <hr class="my-4 border-gray-400" />
+                    <div
+                        x-show="open"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-y-90"
+                        x-transition:enter-end="opacity-100 transform scale-y-100"
+                        x-transition:leave="transition ease-in duration-300"
+                        x-transition:leave-start="opacity-100 transform scale-y-100"
+                        x-transition:leave-end="opacity-0 transform scale-y-90"
+                        class="bg-gray-200 p-6 rounded-b-lg shadow-md"
+                    >
+                        <div class="mb-4">
+                            <h4 class="text-xl font-semibold text-darkpurple">
+                                Pass 1 jour
+                            </h4>
+                            <p class="text-lg font-bold text-pink-500">15€</p>
+                            <p>
+                                Accès à toutes les projections, ateliers et
+                                animations du jour choisi.
+                            </p>
+                        </div>
 
-                <h3 class="text-2xl font-semibold text-darkpurple">
-                    Pass 3 jours
-                </h3>
-                <p class="text-lg font-bold text-pink-500">35€</p>
-                <p>
-                    Profitez de l’intégralité du festival du vendredi au
-                    dimanche, incluant films, courts-métrages, concerts et
-                    rencontres.
-                </p>
+                        <hr class="my-4 border-gray-400" />
+
+                        <div>
+                            <h4 class="text-xl font-semibold text-darkpurple">
+                                Pass 3 jours
+                            </h4>
+                            <p class="text-lg font-bold text-pink-500">35€</p>
+                            <p>
+                                Profitez de l'intégralité du festival du
+                                vendredi au dimanche, incluant films,
+                                courts-métrages, concerts et rencontres.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Cartes : Réservation et Conditions d'accès -->
-            <div class="space-y-6">
-                <div class="bg-darkpurple text-white p-6 rounded-2xl shadow-lg">
-                    <h3 class="text-2xl font-semibold">Comment réserver ?</h3>
-                    <p class="mt-2">
-                        <strong>En ligne :</strong> Réservez vos billets directement
-                        via notre site en sélectionnant le pass de votre choix. Le
-                        paiement se fait en toute sécurité par carte bancaire. Vous
-                        recevrez ensuite vos billets par e-mail sous forme de QR
-                        code à présenter à l’entrée du festival.
-                    </p>
-                    <p class="mt-2">
-                        <strong>Sur place :</strong> Des billets seront également
-                        disponibles à la billetterie du festival aux Glacis de Belfort,
-                        sous réserve de disponibilité. Nous vous conseillons de réserver
-                        en ligne pour garantir vos places.
-                    </p>
-                </div>
+            <!-- Réservation -->
+            <div class="accordion-container space-y-4 mb-8">
+                <div x-data="{ open: false }" class="accordion">
+                    <button
+                        @click="open = !open"
+                        class="accordion-header w-full bg-darkpurple text-white p-4 rounded-t-lg flex justify-between items-center"
+                    >
+                        <h3 class="text-2xl font-semibold">
+                            Comment réserver ?
+                        </h3>
+                        <svg
+                            class="w-6 h-6 transition-transform"
+                            :class="{'rotate-180': open}"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
 
-                <div class="bg-darkpurple text-white p-6 rounded-2xl shadow-lg">
-                    <h3 class="text-2xl font-semibold">Conditions d’accès</h3>
-                    <p class="mt-2">
-                        Les portes du festival ouvrent à partir de <strong
-                            >17h</strong
-                        > le vendredi et à <strong>9h30</strong> le samedi et dimanche.
-                    </p>
-                    <p class="mt-2">
-                        Les billets sont non-remboursables mais transférables.
-                        Il est recommandé d’arriver en avance pour profiter
-                        pleinement des activités et éviter les files d’attente.
-                    </p>
+                    <div
+                        x-show="open"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-y-90"
+                        x-transition:enter-end="opacity-100 transform scale-y-100"
+                        x-transition:leave="transition ease-in duration-300"
+                        x-transition:leave-start="opacity-100 transform scale-y-100"
+                        x-transition:leave-end="opacity-0 transform scale-y-90"
+                        class="bg-white p-6 rounded-b-lg shadow-md"
+                    >
+                        <p class="mb-4">
+                            <strong>En ligne :</strong> Réservez vos billets directement
+                            via notre site en sélectionnant le pass de votre choix.
+                            Le paiement se fait en toute sécurité par carte bancaire.
+                            Vous recevrez ensuite vos billets par e-mail sous forme
+                            de QR code à présenter à l'entrée du festival.
+                        </p>
+                        <p>
+                            <strong>Sur place :</strong> Des billets seront également
+                            disponibles à la billetterie du festival aux Glacis de
+                            Belfort, sous réserve de disponibilité. Nous vous conseillons
+                            de réserver en ligne pour garantir vos places.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Accès et transport -->
-            <div class="mt-12">
-                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
-                    Accès et transport
-                </h3>
-                <ul class="list-disc list-inside space-y-2">
-                    <li>
-                        <strong> En voiture :</strong> Plusieurs parkings publics
-                        sont disponibles à proximité du site.
-                    </li>
-                    <li>
-                        <strong> En train :</strong> La gare de Belfort se trouve
-                        à environ 15 minutes à pied du festival.
-                    </li>
-                    <li>
-                        <strong>En bus :</strong> Des lignes locales desservent
-                        régulièrement la zone.
-                    </li>
-                </ul>
-                <img
-                    src="src/assets/img/pageinfocarte.webp"
-                    alt="Carte de Belfort"
-                    class="w-full mt-6 rounded-lg shadow-md"
-                />
+            <!-- Conditions d'accès -->
+            <div class="accordion-container space-y-4 mb-8">
+                <div x-data="{ open: false }" class="accordion">
+                    <button
+                        @click="open = !open"
+                        class="accordion-header w-full bg-darkpurple text-white p-4 rounded-t-lg flex justify-between items-center"
+                    >
+                        <h3 class="text-2xl font-semibold">
+                            Conditions d'accès
+                        </h3>
+                        <svg
+                            class="w-6 h-6 transition-transform"
+                            :class="{'rotate-180': open}"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-y-90"
+                        x-transition:enter-end="opacity-100 transform scale-y-100"
+                        x-transition:leave="transition ease-in duration-300"
+                        x-transition:leave-start="opacity-100 transform scale-y-100"
+                        x-transition:leave-end="opacity-0 transform scale-y-90"
+                        class="bg-white p-6 rounded-b-lg shadow-md"
+                    >
+                        <p class="mb-4">
+                            Les portes du festival ouvrent à partir de <strong
+                                >17h</strong
+                            > le vendredi et à <strong>9h30</strong> le samedi et
+                            dimanche.
+                        </p>
+                        <p>
+                            Les billets sont non-remboursables mais
+                            transférables. Il est recommandé d'arriver en avance
+                            pour profiter pleinement des activités et éviter les
+                            files d'attente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accès et transport (section normale, pas d'accordéon) -->
+            <div class="mb-8">
+                <div class="bg-darkpurple text-white p-4 rounded-t-lg">
+                    <h3 class="text-2xl font-semibold">Accès et transport</h3>
+                </div>
+                <div class="bg-white p-6 rounded-b-lg shadow-md">
+                    <ul class="list-disc list-inside space-y-2 mb-6">
+                        <li>
+                            <strong>En voiture :</strong> Plusieurs parkings publics
+                            sont disponibles à proximité du site.
+                        </li>
+                        <li>
+                            <strong>En train :</strong> La gare de Belfort se trouve
+                            à environ 15 minutes à pied du festival.
+                        </li>
+                        <li>
+                            <strong>En bus :</strong> Des lignes locales desservent
+                            régulièrement la zone.
+                        </li>
+                    </ul>
+                    <div class="w-full">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d23997.824345768782!2d6.821375777533129!3d47.64534594846278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47923b78fc4e48e1%3A0x409ce34b30d50d0!2sBelfort!5e0!3m2!1sfr!2sfr!4v1741874754255!5m2!1sfr!2sfr"
+                            width="100%"
+                            height="450"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    </div>
+                </div>
             </div>
 
             <!-- Hébergement -->
-            <div class="mt-12">
-                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
-                    Hébergement
-                </h3>
-                <p>
-                    Belfort propose un large choix d’hôtels, auberges et Airbnb
-                    à proximité du festival. Il est recommandé de réserver à
-                    l’avance.
-                </p>
+            <div class="accordion-container space-y-4 mb-8">
+                <div x-data="{ open: false }" class="accordion">
+                    <button
+                        @click="open = !open"
+                        class="accordion-header w-full bg-darkpurple text-white p-4 rounded-t-lg flex justify-between items-center"
+                    >
+                        <h3 class="text-2xl font-semibold">Hébergement</h3>
+                        <svg
+                            class="w-6 h-6 transition-transform"
+                            :class="{'rotate-180': open}"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-y-90"
+                        x-transition:enter-end="opacity-100 transform scale-y-100"
+                        x-transition:leave="transition ease-in duration-300"
+                        x-transition:leave-start="opacity-100 transform scale-y-100"
+                        x-transition:leave-end="opacity-0 transform scale-y-90"
+                        class="bg-white p-6 rounded-b-lg shadow-md"
+                    >
+                        <p>
+                            Belfort propose un large choix d'hôtels, auberges et
+                            Airbnb à proximité du festival. Il est recommandé de
+                            réserver à l'avance.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <!-- Restauration -->
-            <div class="mt-12">
-                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
-                    Restauration
-                </h3>
-                <p>
-                    Des food trucks seront présents sur place pour offrir une
-                    sélection variée de plats, avec des options végétariennes et
-                    véganes disponibles.
-                </p>
+            <div class="accordion-container space-y-4">
+                <div x-data="{ open: false }" class="accordion">
+                    <button
+                        @click="open = !open"
+                        class="accordion-header w-full bg-darkpurple text-white p-4 rounded-t-lg flex justify-between items-center"
+                    >
+                        <h3 class="text-2xl font-semibold">Restauration</h3>
+                        <svg
+                            class="w-6 h-6 transition-transform"
+                            :class="{'rotate-180': open}"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-y-90"
+                        x-transition:enter-end="opacity-100 transform scale-y-100"
+                        x-transition:leave="transition ease-in duration-300"
+                        x-transition:leave-start="opacity-100 transform scale-y-100"
+                        x-transition:leave-end="opacity-0 transform scale-y-90"
+                        class="bg-white p-6 rounded-b-lg shadow-md"
+                    >
+                        <p>
+                            Des food trucks seront présents sur place pour
+                            offrir une sélection variée de plats, avec des
+                            options végétariennes et véganes disponibles.
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
     </Fragment>

@@ -26,14 +26,18 @@ const {
             />
         </picture>
 
-        <!-- 🔽 Titre et sous-titre positionnés aux 3/4 de l'image -->
+        <!--  Titre et sous-titre positionnés aux 3/4 de l'image -->
         <div
             class="absolute bottom-[10%] md:bottom-[10%] left-1/2 -translate-x-1/2 text-pink px-6 text-center max-w-[100%] md:max-w-[90%]"
         >
-            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold">{title}</h1>
+            <h1
+                class="text-3xl text-pink-500 md:text-5xl lg:text-6xl font-bold"
+            >
+                {title}
+            </h1>
             {
                 subTitle && (
-                    <h2 class=" font-sans font-extrabold  mt-2 md:mt-4">
+                    <h2 class=" font-sans text-pink-500 font-extrabold  mt-2 md:mt-4">
                         {subTitle}
                     </h2>
                 )
