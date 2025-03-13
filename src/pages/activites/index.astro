@@ -29,12 +29,12 @@ const activitesJson = JSON.stringify(activites);
     <Fragment slot="content">
         <p>Retrouvez toutes les activités organisées durant le festival.</p>
 
-        <!-- 📌 Section avec boutons -->
+        <!-- Section avec boutons -->
         <div class="my-8">
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <button
                     id="show-all"
-                    class="bg-(--color-beige) text-(--color-pink) px-4 py-2 rounded-lg shadow transition duration-300"
+                    class="bg-(--color-white) text-(--color-pink) px-4 py-2 rounded-lg shadow transition duration-300"
                 >
                     Afficher toutes les activités
                 </button>
@@ -62,7 +62,7 @@ const activitesJson = JSON.stringify(activites);
                 </div>
             </div>
 
-            <!-- 🏆 Grille des activités -->
+            <!-- Grille des activités -->
             <div
                 id="activites-grid"
                 class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 my-24 mx-auto container"
@@ -207,9 +207,9 @@ const activitesJson = JSON.stringify(activites);
             // Utiliser le même format que votre CardActivite.astro
             card.innerHTML = `
                 <article class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md lg:max-w-[350px] h-full mx-auto">
-                    <!-- 📜 Contenu texte -->
+                    <!--  Contenu texte -->
                     <div class="flex-grow bg-white p-4 flex flex-col">
-                        <!-- 🏆 Titre de l'activité -->
+                        <!--  Titre de l'activité -->
                         <h4 class="text-lg font-sans font-bold text-black mb-2">
                             ${activite.titre_activite}
                         </h4>
@@ -219,9 +219,9 @@ const activitesJson = JSON.stringify(activites);
                             ${activite.type_activite}
                         </p>
                         
-                        <!-- 📅 Date -->
+                        <!--  Date -->
                         <p class="text-sm text-gray-600 mb-2">
-                            📅 ${new Date(
+                             ${new Date(
                                 activite.date_heure_activite,
                             ).toLocaleDateString("fr-FR", {
                                 year: "numeric",
@@ -232,8 +232,7 @@ const activitesJson = JSON.stringify(activites);
                             })}
                         </p>
                         
-                        <!-- ➕ Bouton "Plus d'info" -->
-                        <!-- ✅ Version corrigée -->
+                        <!--  Bouton "Plus d'info" -->
                         <div class="mt-auto pt-2">
                             <a href="/activites/${activite.id}" class="text-pink-600 hover:underline font-medium">
                                 Plus d'info

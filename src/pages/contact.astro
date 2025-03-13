@@ -3,18 +3,142 @@ import LayoutWithHero from "../layouts/LayoutWithHero.astro";
 import ImgHero from "../assets/img/headerPages.webp";
 import ImgHeroDesktop from "../assets/img/headerPagesDesktop.webp";
 
-const title = "Contactez-nous !";
-const description = "13 au 15 Mars 2025";
+const title = "Nous Contacter";
 ---
 
 <LayoutWithHero
     title={title}
-    description={description}
     src={ImgHero}
     srcDesktop={ImgHeroDesktop}
     alt="hero"
     classLayout="h-65"
 >
-    <h1 class="font-title-orb text-pink">Sci-fi Stival</h1>
-    <p class="h-screen">Texte standard</p>
+    <Fragment slot="content">
+        <section class="max-w-4xl mx-auto px-6 py-12 text-gray-800">
+
+            <!-- Introduction -->
+            <p class="text-lg text-center mb-8">
+                Vous avez des questions ou un avis à partager ? Contactez-nous !
+            </p>
+
+            <!-- Formulaire de contact -->
+            <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
+                    Formulaire de contact
+                </h3>
+                <form action="#" method="POST" class="space-y-4">
+                    <div class="flex flex-col">
+                        <label for="name" class="font-semibold text-gray-700"
+                            >Nom</label
+                        >
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            required
+                            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label
+                            for="lastname"
+                            class="font-semibold text-gray-700">Prénom</label
+                        >
+                        <input
+                            type="text"
+                            id="lastname"
+                            name="lastname"
+                            required
+                            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="email" class="font-semibold text-gray-700"
+                            >Mail</label
+                        >
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        />
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="message" class="font-semibold text-gray-700"
+                            >Message</label
+                        >
+                        <textarea
+                            id="message"
+                            name="message"
+                            rows="5"
+                            required
+                            class="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        ></textarea>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-lg transition"
+                    >
+                        Envoyer
+                    </button>
+                </form>
+            </div>
+
+            <!-- Informations de contact -->
+            <div
+                class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center"
+            >
+                <div
+                    class="bg-gray-100 p-6 rounded-lg shadow-md flex flex-col items-center"
+                >
+                    <img
+                        src="src/assets/icons/messages.svg"
+                        alt="Icon Messages"
+                        class="w-12 h-12 mb-2"
+                    />
+                    <h4 class="text-lg font-semibold">Écrivez-nous</h4>
+                    <p class="text-sm text-gray-700">
+                        serviceclient@offstage.fr
+                    </p>
+                </div>
+
+                <div
+                    class="bg-gray-100 p-6 rounded-lg shadow-md flex flex-col items-center"
+                >
+                    <img
+                        src="src/assets/icons/callcalling.svg"
+                        alt="Icon Téléphone"
+                        class="w-12 h-12 mb-2"
+                    />
+                    <h4 class="text-lg font-semibold">Téléphonez-nous</h4>
+                    <p class="text-sm text-gray-700">01 86 47 80 04</p>
+                </div>
+
+                <div
+                    class="bg-gray-100 p-6 rounded-lg shadow-md flex flex-col items-center"
+                >
+                    <img
+                        src="src/assets/icons/house.svg"
+                        alt="Icon Maison"
+                        class="w-12 h-12 mb-2"
+                    />
+                    <h4 class="text-lg font-semibold">Adresse postale</h4>
+                    <p class="text-sm text-gray-700">
+                        <a
+                            href="https://www.google.com/maps?q=MAIS+de+QUAR+av+Laurencie,+90000+Belfort"
+                            target="_blank"
+                            class="text-pink-500 hover:underline"
+                        >
+                            MAIS de QUAR av Laurencie, 90000 Belfort
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </Fragment>
 </LayoutWithHero>

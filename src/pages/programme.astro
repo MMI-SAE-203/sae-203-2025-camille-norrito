@@ -4,39 +4,33 @@ import ImgHero from "../assets/img/headerPages.webp";
 import ImgHeroDesktop from "../assets/img/headerPagesDesktop.webp";
 import Card from "../components/Card.astro";
 import CardActivite from "../components/CardActivite.astro";
-import { getAllFilms } from "../../backend/pocketbase/backend.mjs";
-import { getAllActivities } from "../../backend/pocketbase/backend.mjs";
+import {
+    getAllFilms,
+    getAllActivities,
+} from "../../backend/pocketbase/backend.mjs";
 
 const title = "Programmation";
 const subTitle = "Découvrez les films et activités";
 const description =
     "Retrouvez tous les films projetés et les activités du festival.";
 
-// 📌 Récupérer les données des films et activités
+// Récupérer les données et préparer les filtres
 const films = await getAllFilms();
 const activites = await getAllActivities();
-
-// 📌 Ajout d'un flag favori si non existant
 const filmsWithFavorites = films.map((film) => ({
     ...film,
     favori: film.hasOwnProperty("favori") ? film.favori : false,
 }));
-
-// 📌 Extraction des genres uniques pour le filtrage
 const genres = [
     ...new Set(
         filmsWithFavorites.map((film) => film.genre_film).filter(Boolean),
     ),
 ];
-const genresJson = JSON.stringify(genres);
-
-// 📌 Extraction des types d'activités uniques pour le filtrage
 const activityTypes = [...new Set(activites.map((a) => a.type_activite))];
 
-// 📌 Conversion en JSON pour le frontend
+// Conversion en JSON pour le frontend
 const filmsJson = JSON.stringify(filmsWithFavorites);
 const activitesJson = JSON.stringify(activites);
-const activityTypesJson = JSON.stringify(activityTypes);
 ---
 
 <LayoutWithHero
@@ -55,22 +49,22 @@ const activityTypesJson = JSON.stringify(activityTypes);
 
         <!-- 🎬 FILMS -->
         <section class="mt-12">
-            <h2 class="text-2xl font-bold text-center mb-6"> Films</h2>
+            <h2 class="text-2xl font-bold text-center mb-6">Films</h2>
 
             <!-- Filtres pour les films -->
             <div class="flex flex-wrap justify-center gap-4 mb-8">
-                <button id="show-all-films" class="filter-btn"
-                    >Afficher tous les films</button
+                <button id="show-all-films" class="filter-btn active"
+                    >Tous les films</button
                 >
                 <button id="show-favorites-films" class="filter-btn"
-                    >Afficher mes favoris</button
+                    >Mes favoris</button
                 >
                 <button id="sort-date-films" class="filter-btn"
                     >Trier par date ⬆</button
                 >
             </div>
 
-            <!-- 🎭 Filtres par genre -->
+            <!-- Filtres par genre -->
             <div class="mb-8 text-center">
                 <h4 class="text-lg font-semibold mb-3">Filtrer par genre</h4>
                 <div
@@ -90,14 +84,16 @@ const activityTypesJson = JSON.stringify(activityTypes);
                 </div>
             </div>
 
-            <!-- 🎬 Affichage des films -->
+            <!-- Affichage des films -->
             <div id="films-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 {
                     filmsWithFavorites.length > 0 ? (
                         filmsWithFavorites.map((film) => (
                             <div
-                                class="w-full mx-auto relative"
+                                class="w-full mx-auto relative film-card"
                                 data-genre={film.genre_film}
+                                data-date={film.date_projection}
+                                data-favori={film.favori.toString()}
                             >
                                 <div class="absolute top-2 right-2 z-10">
                                     <button
@@ -105,8 +101,13 @@ const activityTypesJson = JSON.stringify(activityTypes);
                                         class="favorite-toggle p-2 bg-white bg-opacity-70 rounded-full shadow"
                                     >
                                         <svg
-                                            class="w-6 h-6 favorite-icon"
-                                            fill="currentColor"
+                                            class={`w-6 h-6 favorite-icon ${film.favori ? "text-yellow-500" : "text-gray-400"}`}
+                                            fill={
+                                                film.favori
+                                                    ? "currentColor"
+                                                    : "none"
+                                            }
+                                            stroke="currentColor"
                                             viewBox="0 0 20 20"
                                         >
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292z" />
@@ -127,19 +128,19 @@ const activityTypesJson = JSON.stringify(activityTypes);
 
         <!-- 🎭 ACTIVITÉS -->
         <section class="mt-16">
-            <h2 class="text-2xl font-bold text-center mb-6"> Activités</h2>
+            <h2 class="text-2xl font-bold text-center mb-6">Activités</h2>
 
             <!-- Filtres pour les activités -->
             <div class="flex flex-wrap justify-center gap-4 mb-8">
-                <button id="show-all-activities" class="filter-btn"
-                    >Afficher toutes les activités</button
+                <button id="show-all-activities" class="filter-btn active"
+                    >Toutes les activités</button
                 >
                 <button id="sort-date-activities" class="filter-btn"
                     >Trier par date ⬆</button
                 >
             </div>
 
-            <!-- 🏷️ Filtres par type -->
+            <!-- Filtres par type -->
             <div class="mb-8 text-center">
                 <h4 class="text-lg font-semibold mb-3">Filtrer par type</h4>
                 <div
@@ -159,7 +160,7 @@ const activityTypesJson = JSON.stringify(activityTypes);
                 </div>
             </div>
 
-            <!-- 🎭 Affichage des activités -->
+            <!-- Affichage des activités -->
             <div
                 id="activities-grid"
                 class="grid grid-cols-2 sm:grid-cols-3 gap-6"
@@ -167,7 +168,13 @@ const activityTypesJson = JSON.stringify(activityTypes);
                 {
                     activites.length > 0 ? (
                         activites.map((activite) => (
-                            <CardActivite {...activite} />
+                            <div
+                                class="activity-card"
+                                data-type={activite.type_activite}
+                                data-date={activite.date_activite}
+                            >
+                                <CardActivite {...activite} />
+                            </div>
                         ))
                     ) : (
                         <p class="col-span-full text-center">
@@ -180,40 +187,207 @@ const activityTypesJson = JSON.stringify(activityTypes);
     </Fragment>
 </LayoutWithHero>
 
-<script
-    define:vars={{ filmsJson, activitesJson, genresJson, activityTypesJson }}
->
-    // ⚡ Convertir JSON en JavaScript
+<script define:vars={{ filmsJson, activitesJson }}>
+    // Initialisation des données et variables
     let filmsData = JSON.parse(filmsJson);
     let activitesData = JSON.parse(activitesJson);
-    let genres = JSON.parse(genresJson);
-    let activityTypes = JSON.parse(activityTypesJson);
+    let filmsSortDirection = "asc";
+    let activitiesSortDirection = "asc";
 
     document.addEventListener("DOMContentLoaded", function () {
-        attachEventListeners();
+        initFavorites();
+        setupFilters();
     });
 
-    function attachEventListeners() {
+    // Initialisation des favoris depuis localStorage
+    function initFavorites() {
+        const savedFavorites = localStorage.getItem("filmFavorites");
+        if (savedFavorites) {
+            const favoriteIds = JSON.parse(savedFavorites);
+            filmsData.forEach(
+                (film) => (film.favori = favoriteIds.includes(film.id)),
+            );
+            updateFavoriteIcons();
+        }
+        document
+            .querySelectorAll(".favorite-toggle")
+            .forEach((btn) => btn.addEventListener("click", toggleFavorite));
+    }
+
+    // Mise à jour des icônes selon l'état favori
+    function updateFavoriteIcons() {
+        document.querySelectorAll(".film-card").forEach((card) => {
+            const btn = card.querySelector(".favorite-toggle");
+            const filmId = btn.dataset.id;
+            const film = filmsData.find((f) => f.id === filmId);
+            const icon = btn.querySelector(".favorite-icon");
+
+            card.setAttribute("data-favori", film.favori.toString());
+            icon.classList.toggle("text-yellow-500", film.favori);
+            icon.classList.toggle("text-gray-400", !film.favori);
+            icon.setAttribute("fill", film.favori ? "currentColor" : "none");
+        });
+    }
+
+    // Basculer l'état favori d'un film
+    function toggleFavorite(e) {
+        const filmId = e.currentTarget.dataset.id;
+        const film = filmsData.find((f) => f.id === filmId);
+        if (film) {
+            film.favori = !film.favori;
+            updateFavoriteIcons();
+            const favoriteIds = filmsData
+                .filter((f) => f.favori)
+                .map((f) => f.id);
+            localStorage.setItem("filmFavorites", JSON.stringify(favoriteIds));
+        }
+    }
+
+    // Configuration des filtres et écouteurs d'événements
+    function setupFilters() {
+        // Films: tous, favoris et tri par date
+        document
+            .getElementById("show-all-films")
+            .addEventListener("click", function () {
+                resetActiveButtons(".filter-btn", this);
+                document
+                    .querySelectorAll(".film-card")
+                    .forEach((card) => (card.style.display = "block"));
+            });
+
         document
             .getElementById("show-favorites-films")
             .addEventListener("click", function () {
-                alert("Fonctionnalité à implémenter : Afficher les favoris.");
+                resetActiveButtons(".filter-btn", this);
+                document.querySelectorAll(".film-card").forEach((card) => {
+                    card.style.display =
+                        card.getAttribute("data-favori") === "true"
+                            ? "block"
+                            : "none";
+                });
             });
 
         document
             .getElementById("sort-date-films")
             .addEventListener("click", function () {
-                alert(
-                    "Fonctionnalité à implémenter : Trier les films par date.",
+                sortByDate(
+                    "films-grid",
+                    ".film-card",
+                    "data-date",
+                    filmsSortDirection,
                 );
+                filmsSortDirection =
+                    filmsSortDirection === "asc" ? "desc" : "asc";
+                this.textContent = `Trier par date ${filmsSortDirection === "asc" ? "⬆" : "⬇"}`;
+            });
+
+        // Films: filtres par genre
+        document.querySelectorAll(".genre-filter").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                resetActiveButtons(".genre-filter", this);
+                const genre = this.dataset.genre;
+                document.querySelectorAll(".film-card").forEach((card) => {
+                    card.style.display =
+                        genre === "all" ||
+                        card.getAttribute("data-genre") === genre
+                            ? "block"
+                            : "none";
+                });
+            });
+        });
+
+        // Activités: tous et tri par date
+        document
+            .getElementById("show-all-activities")
+            .addEventListener("click", function () {
+                resetActiveButtons("#show-all-activities, .type-filter", this);
+                document
+                    .querySelectorAll(".activity-card")
+                    .forEach((card) => (card.style.display = "block"));
             });
 
         document
             .getElementById("sort-date-activities")
             .addEventListener("click", function () {
-                alert(
-                    "Fonctionnalité à implémenter : Trier les activités par date.",
+                sortByDate(
+                    "activities-grid",
+                    ".activity-card",
+                    "data-date",
+                    activitiesSortDirection,
                 );
+                activitiesSortDirection =
+                    activitiesSortDirection === "asc" ? "desc" : "asc";
+                this.textContent = `Trier par date ${activitiesSortDirection === "asc" ? "⬆" : "⬇"}`;
             });
+
+        // Activités: filtres par type
+        document.querySelectorAll(".type-filter").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                resetActiveButtons(".type-filter", this);
+                const type = this.dataset.type;
+                document.querySelectorAll(".activity-card").forEach((card) => {
+                    card.style.display =
+                        type === "all" ||
+                        card.getAttribute("data-type") === type
+                            ? "block"
+                            : "none";
+                });
+            });
+        });
+    }
+
+    // Fonctions utilitaires
+    function resetActiveButtons(selector, activeButton) {
+        document
+            .querySelectorAll(selector)
+            .forEach((btn) => btn.classList.remove("active"));
+        activeButton.classList.add("active");
+    }
+
+    function sortByDate(gridId, cardSelector, dateAttr, direction) {
+        const grid = document.getElementById(gridId);
+        const cards = Array.from(document.querySelectorAll(cardSelector));
+
+        cards.sort((a, b) => {
+            const dateA = new Date(a.getAttribute(dateAttr));
+            const dateB = new Date(b.getAttribute(dateAttr));
+            return direction === "asc" ? dateA - dateB : dateB - dateA;
+        });
+
+        grid.innerHTML = "";
+        cards.forEach((card) => grid.appendChild(card));
     }
 </script>
+
+<style>
+    .filter-btn,
+    .genre-filter,
+    .type-filter {
+        padding: 0.5rem 0.75rem;
+        background-color: #f3f4f6;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        transition:
+            background-color 0.2s,
+            color 0.2s;
+    }
+
+    .filter-btn:hover,
+    .genre-filter:hover,
+    .type-filter:hover {
+        background-color: #e5e7eb;
+    }
+
+    .filter-btn.active,
+    .genre-filter.active,
+    .type-filter.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .filter-btn.active:hover,
+    .genre-filter.active:hover,
+    .type-filter.active:hover {
+        background-color: #2563eb;
+    }
+</style>

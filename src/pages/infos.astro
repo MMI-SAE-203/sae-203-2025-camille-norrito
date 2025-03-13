@@ -2,8 +2,9 @@
 import LayoutWithHero from "../layouts/LayoutWithHero.astro";
 import ImgHero from "../assets/img/headerPages.webp";
 import ImgHeroDesktop from "../assets/img/headerPagesDesktop.webp";
+import MapImage from "../assets/pageinfocarte.webp"; // Image de la carte
 
-const title = "Infos pratiques";
+const title = "Infos Pratiques";
 ---
 
 <LayoutWithHero
@@ -13,6 +14,127 @@ const title = "Infos pratiques";
     alt="hero"
     classLayout="h-65"
 >
-    <h1 class="font-title-orb text-pink">Sci-fi Stival</h1>
-    <p class="h-screen">Texte standard</p>
+    <Fragment slot="content">
+        <section class="max-w-4xl mx-auto px-6 py-12 text-gray-800">
+
+            <!-- Introduction -->
+            <p class="text-lg text-center mb-8">
+                Le Sci-Fi' Stival se déroulera du <strong
+                    >vendredi 14 au dimanche 16 mars 2025</strong
+                >
+                aux Glacis de Belfort, un espace en plein air idéal pour accueillir
+                projections, concerts et ateliers. Situé en plein cœur de Belfort,
+                le Glacis est facilement accessible et offre un cadre convivial pour
+                profiter pleinement de l’événement.
+            </p>
+
+            <!-- Tarifs -->
+            <div class="bg-gray-200 p-6 rounded-lg shadow-md mb-8">
+                <h3 class="text-2xl font-semibold text-darkpurple">
+                    Pass 1 jour
+                </h3>
+                <p class="text-lg font-bold text-pink-500">15€</p>
+                <p>
+                    Accès à toutes les projections, ateliers et animations du
+                    jour choisi.
+                </p>
+
+                <hr class="my-4 border-gray-400" />
+
+                <h3 class="text-2xl font-semibold text-darkpurple">
+                    Pass 3 jours
+                </h3>
+                <p class="text-lg font-bold text-pink-500">35€</p>
+                <p>
+                    Profitez de l’intégralité du festival du vendredi au
+                    dimanche, incluant films, courts-métrages, concerts et
+                    rencontres.
+                </p>
+            </div>
+
+            <!-- Cartes : Réservation et Conditions d'accès -->
+            <div class="space-y-6">
+                <div class="bg-darkpurple text-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-semibold">Comment réserver ?</h3>
+                    <p class="mt-2">
+                        <strong>En ligne :</strong> Réservez vos billets directement
+                        via notre site en sélectionnant le pass de votre choix. Le
+                        paiement se fait en toute sécurité par carte bancaire. Vous
+                        recevrez ensuite vos billets par e-mail sous forme de QR
+                        code à présenter à l’entrée du festival.
+                    </p>
+                    <p class="mt-2">
+                        <strong>Sur place :</strong> Des billets seront également
+                        disponibles à la billetterie du festival aux Glacis de Belfort,
+                        sous réserve de disponibilité. Nous vous conseillons de réserver
+                        en ligne pour garantir vos places.
+                    </p>
+                </div>
+
+                <div class="bg-darkpurple text-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-semibold">Conditions d’accès</h3>
+                    <p class="mt-2">
+                        Les portes du festival ouvrent à partir de <strong
+                            >17h</strong
+                        > le vendredi et à <strong>9h30</strong> le samedi et dimanche.
+                    </p>
+                    <p class="mt-2">
+                        Les billets sont non-remboursables mais transférables.
+                        Il est recommandé d’arriver en avance pour profiter
+                        pleinement des activités et éviter les files d’attente.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Accès et transport -->
+            <div class="mt-12">
+                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
+                    Accès et transport
+                </h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>
+                        <strong> En voiture :</strong> Plusieurs parkings publics
+                        sont disponibles à proximité du site.
+                    </li>
+                    <li>
+                        <strong> En train :</strong> La gare de Belfort se trouve
+                        à environ 15 minutes à pied du festival.
+                    </li>
+                    <li>
+                        <strong>En bus :</strong> Des lignes locales desservent
+                        régulièrement la zone.
+                    </li>
+                </ul>
+                <img
+                    src="src/assets/img/pageinfocarte.webp"
+                    alt="Carte de Belfort"
+                    class="w-full mt-6 rounded-lg shadow-md"
+                />
+            </div>
+
+            <!-- Hébergement -->
+            <div class="mt-12">
+                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
+                    Hébergement
+                </h3>
+                <p>
+                    Belfort propose un large choix d’hôtels, auberges et Airbnb
+                    à proximité du festival. Il est recommandé de réserver à
+                    l’avance.
+                </p>
+            </div>
+
+            <!-- Restauration -->
+            <div class="mt-12">
+                <h3 class="text-2xl font-semibold text-darkpurple mb-4">
+                    Restauration
+                </h3>
+                <p>
+                    Des food trucks seront présents sur place pour offrir une
+                    sélection variée de plats, avec des options végétariennes et
+                    véganes disponibles.
+                </p>
+            </div>
+        </section>
+    </Fragment>
 </LayoutWithHero>

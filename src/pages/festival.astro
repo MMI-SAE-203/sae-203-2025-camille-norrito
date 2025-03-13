@@ -3,8 +3,7 @@ import LayoutWithHero from "../layouts/LayoutWithHero.astro";
 import ImgHero from "../assets/img/headerPages.webp";
 import ImgHeroDesktop from "../assets/img/headerPagesDesktop.webp";
 
-const title = "Le festival";
-
+const title = "Le Festival";
 ---
 
 <LayoutWithHero
@@ -14,6 +13,127 @@ const title = "Le festival";
     alt="hero"
     classLayout="h-65"
 >
-    <h1 class="font-title-orb text-pink">Sci-fi Stival</h1>
-    <p class="h-screen">Texte standard</p>
+    <Fragment slot="content">
+        <!-- Bloc de bienvenue -->
+        <div
+            class="bg-purple-700 text-white p-6 md:p-8 rounded-2xl shadow-lg max-w-3xl mx-auto text-center mt-10"
+        >
+            <p class="text-lg md:text-xl leading-relaxed">
+                Bienvenue au Sci-Fi Festival, le festival de cinéma de
+                science-fiction de Belfort ! Du 1 au 14 mars 2025, plongez dans
+                un univers captivant et futuriste. Ouvert à tous, ce festival
+                est une célébration dynamique et immersive qui réunit passionnés
+                et curieux autour d’une passion commune.
+            </p>
+        </div>
+
+        <!-- Programme du Festival -->
+        <div class="max-w-4xl mx-auto text-gray-800 mt-12 px-6">
+            <p class="text-lg">
+                Au programme, des courts-métrages inédits réalisés par des
+                talents venant de tous horizons, qui participeront à un concours
+                pour tenter de remporter des prix.
+            </p>
+            <img
+                src="/src/assets/img/pagefestival1.webp"
+                alt="Poster de film"
+                class="w-full rounded-lg shadow-md my-6"
+            />
+
+            <p class="text-lg">
+                Vous pourrez également assister à la projection de films
+                emblématiques du genre ainsi que des perles rares, souvent
+                accompagnées de leurs réalisateurs, offrant l’occasion unique de
+                les rencontrer et d’échanger avec eux. Que vous soyez amateur ou
+                expert en science-fiction, c’est une opportunité d’enrichir
+                votre culture cinématographique tout en vous divertissant.
+            </p>
+
+            <p class="text-lg mt-6">
+                Pour les amateurs de musique, ne manquez pas notre concert dédié
+                aux bandes originales cultes des films de science-fiction. Les
+                mélodies qui ont marqué l’histoire du cinéma seront interprétées
+                pour raviver vos souvenirs et enrichir l’expérience
+                cinématographique du festival.
+            </p>
+            <img
+                src="/src/assets/img/pagefestival2.webp"
+                alt="Concert Sci-Fi"
+                class="w-full rounded-lg shadow-md my-6"
+            />
+
+            <p class="text-center font-semibold text-pink-500 text-lg mt-8">
+                Soyez prêts à vivre une aventure inoubliable au Sci-Fi’stival !
+            </p>
+        </div>
+
+        <!-- Séparateur -->
+        <div class="w-24 h-1 bg-gray-400 mx-auto my-10"></div>
+
+        <!-- Équipe -->
+        <h2 class="text-center text-2xl font-bold text-gray-800 mb-8">
+            Notre équipe
+        </h2>
+
+        <div
+            class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-6 px-6"
+        >
+            <div class="text-center">
+                <img
+                    src="/src/assets/img/employe_1.webp"
+                    alt="Thomas Morel"
+                    class="w-full rounded-lg shadow-md"
+                />
+                <h5 class="font-semibold mt-3">Thomas Morel</h5>
+                <p class="text-gray-600 text-sm">Coordinateur logistique</p>
+            </div>
+            <div class="text-center">
+                <img
+                    src="/src/assets/img/employe_2.webp"
+                    alt="Sophie Lemine"
+                    class="w-full rounded-lg shadow-md"
+                />
+                <h5 class="font-semibold mt-3">Sophie Lemine</h5>
+                <p class="text-gray-600 text-sm">Directrice artistique</p>
+            </div>
+            <div class="text-center">
+                <img
+                    src="/src/assets/img/employe_3.webp"
+                    alt="Lucas Perrin"
+                    class="w-full rounded-lg shadow-md"
+                />
+                <h5 class="font-semibold mt-3">Lucas Perrin</h5>
+                <p class="text-gray-600 text-sm">Coordinateur des bénévoles</p>
+            </div>
+            <div class="text-center">
+                <img
+                    src="/src/assets/img/employe_4.webp"
+                    alt="Alice Dupuy"
+                    class="w-full rounded-lg shadow-md"
+                />
+                <h5 class="font-semibold mt-3">Alice Dupuy</h5>
+                <p class="text-gray-600 text-sm">Chargée de communication</p>
+            </div>
+            <div class="text-center">
+                <img
+                    src="/src/assets/img/employe_5.webp"
+                    alt="Camille Roche"
+                    class="w-full rounded-lg shadow-md"
+                />
+                <h5 class="font-semibold mt-3">Camille Roche</h5>
+                <p class="text-gray-600 text-sm">
+                    Responsable des partenariats
+                </p>
+            </div>
+            <div class="text-center">
+                <img
+                    src="/src/assets/img/employe_6.webp"
+                    alt="Julien Garnier"
+                    class="w-full rounded-lg shadow-md"
+                />
+                <h5 class="font-semibold mt-3">Julien Garnier</h5>
+                <p class="text-gray-600 text-sm">Rédacteur technique</p>
+            </div>
+        </div>
+    </Fragment>
 </LayoutWithHero>

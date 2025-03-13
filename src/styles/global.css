@@ -10,10 +10,10 @@
 
     --color-white: oklch(100% 0 0);
     --color-lilac: oklch(90.47% 0.043 311.46);
-    --color-darkpurple: oklch(41.68% 0.2057 303.73);
-    --color-purple: oklch(61.84% 0.1763 308.62);
+    --color-darkpurple: oklch(39.9% 0.0517 247.29);
+    --color-purple: oklch(50.25% 0.0837 243.22);
     --color-green: oklch(82.04% 0.1449 184.17);
-    --color-pink: oklch(68.35% 0.219 4.26);
+    --color-pink: oklch(85.84% 0.0324 206.37);
     --color-black: oklch(14.69% 0.0423 266.8);
     --color-lavender: oklch(79.43% 0.0999 310.38);
     --color-beige: oklch(87.23% 0.0033 17.22);
@@ -22,7 +22,7 @@
 @layer base {
 
     body {
-        @apply font-sans text-base leading-relaxed font-light bg-(--color-lavender);
+        @apply font-sans text-base leading-relaxed font-light bg-(--color-beige);
     }
 
     img {
