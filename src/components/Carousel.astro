@@ -1,0 +1,268 @@
+---
+import { getAllFilms } from "../../backend/pocketbase/backend.mjs";
+
+// Récupérer tous les films depuis PocketBase
+const films = await getAllFilms();
+
+// URL de base pour récupérer les affiches des films
+const baseUrl = "http://127.0.0.1:8090/api/files/Films";
+---
+
+<div
+    class="carousel-container my-12 max-w-full mx-auto px-4 lg:px-8"
+    x-data="{ 
+        current: 0, 
+        slidesToShow: 1, 
+        itemCount: 0,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        autoplayInterval: null,
+        totalPages: 0
+    }"
+    x-init="
+    // Compter le nombre total d'affiches
+    itemCount = $refs.track.children.length;
+
+    // Définir le nombre d'affiches visibles selon la largeur de l'écran
+    slidesToShow = window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 4;
+    
+    // Calculer le nombre total de pages
+    totalPages = Math.ceil(itemCount / slidesToShow);
+
+    // Mettre à jour lors du redimensionnement de la fenêtre
+    window.addEventListener('resize', () => {
+        const newSlidesToShow = window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 4;
+        if (newSlidesToShow !== slidesToShow) {
+            slidesToShow = newSlidesToShow;
+            totalPages = Math.ceil(itemCount / slidesToShow);
+            // Ajuster la position actuelle si nécessaire
+            if (current >= totalPages * slidesToShow) {
+                current = 0;
+            }
+        }
+    });
+    
+    // Démarrer l'autoplay
+    if (autoplay && itemCount > slidesToShow) {
+        autoplayInterval = setInterval(() => {
+            current = (current + 1) % itemCount;
+        }, autoplaySpeed);
+    }
+    
+    // Nettoyer l'interval lors de la destruction du composant
+    $cleanup = () => {
+        if (autoplayInterval) clearInterval(autoplayInterval);
+    }
+"
+>
+    <h2 class="text-3xl font-bold font-family text-center mb-8"> Films à l'affiche</h2>
+
+    <div class="carousel relative">
+        <!-- Bouton Précédent -->
+        <button
+            class="carousel-button prev absolute top-1/2 -translate-y-1/2 left-0 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+            @click="current = (current - 1 + itemCount) % itemCount"
+            @mouseenter="if (autoplayInterval) { clearInterval(autoplayInterval); autoplayInterval = null; }"
+            @mouseleave="if (autoplay && !autoplayInterval) { autoplayInterval = setInterval(() => { current = (current + 1) % itemCount; }, autoplaySpeed); }"
+            aria-label="Précédent"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <!-- Conteneur des affiches -->
+        <div class="carousel-track-container overflow-hidden px-12">
+            <ul
+                x-ref="track"
+                class="carousel-track flex transition-transform duration-500"
+                :style="`transform: translateX(-${(current % itemCount) * (100 / slidesToShow)}%)`"
+            >
+                {
+                    films.map((film) => (
+                        <li class="carousel-item flex flex-col items-center">
+                            <div class="poster-wrapper">
+                                <a
+                                    href={`/films/${film.id}`}
+                                    class="poster-container rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+                                >
+                                    <img
+                                        src={`${baseUrl}/${film.id}/${film.affiche_film}`}
+                                        alt={`Affiche du film ${film.titre_film}`}
+                                        class="poster-image w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                    />
+                                </a>
+                            </div>
+                            <h4 class="film-title text-center mt-4 font-medium text-lg truncate max-w-full px-2">
+                                {film.titre_film}
+                            </h4>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+
+        <!-- Bouton Suivant -->
+        <button
+            class="carousel-button next absolute top-1/2 -translate-y-1/2 right-0 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+            @click="current = (current + 1) % itemCount"
+            @mouseenter="if (autoplayInterval) { clearInterval(autoplayInterval); autoplayInterval = null; }"
+            @mouseleave="if (autoplay && !autoplayInterval) { autoplayInterval = setInterval(() => { current = (current + 1) % itemCount; }, autoplaySpeed); }"
+            aria-label="Suivant"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Indicateurs de pagination (petits points) -->
+    <div class="pagination-dots flex justify-center mt-6">
+        <template x-for="i in Math.ceil(itemCount / slidesToShow)" :key="i">
+            <button
+                class="pagination-dot mx-1 h-3 w-3 rounded-full transition-colors duration-300 focus:outline-none"
+                :class="Math.floor(current / slidesToShow) === i - 1 ? 'bg-blue-600' : 'bg-gray-300 hover:bg-gray-400'"
+                @click="current = (i - 1) * slidesToShow"
+                :aria-label="`Page ${i}`"></button>
+        </template>
+    </div>
+</div>
+
+<style>
+    .carousel-container {
+        width: 100%;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-item {
+        flex: 0 0 calc(100% / var(--slides-to-show, 1));
+        padding: 0 0.75rem;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Wrapper pour centrer les affiches et assurer une taille fixe */
+    .poster-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Rapport hauteur/largeur pour les affiches (84cm × 119cm) */
+    .poster-container {
+        aspect-ratio: 84/119;
+        display: block;
+        width: 200px; /* Taille fixe pour tous les écrans */
+    }
+
+    .poster-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .film-title {
+        width: 100%;
+        max-width: 200px; /* Uniformiser avec la taille de l'affiche */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* Responsive */
+    @media (min-width: 640px) {
+        .carousel-item {
+            --slides-to-show: 2;
+        }
+
+        .poster-container {
+            width: 220px; /* Taille fixe pour tablette */
+        }
+
+        .film-title {
+            max-width: 220px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .carousel-item {
+            --slides-to-show: 4;
+        }
+
+        .poster-container {
+            width: 220px; /* Taille fixe pour desktop - uniformisée */
+        }
+
+        .film-title {
+            max-width: 220px;
+        }
+    }
+
+    /* Style pour les points de pagination */
+    .pagination-dots {
+        margin-top: 1.5rem;
+    }
+
+    .pagination-dot {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-dot:hover {
+        transform: scale(1.2);
+    }
+</style>
+
+<script>
+    // Script pour uniformiser les tailles et calculs
+    document.addEventListener("alpine:init", () => {
+        // Mise à jour des variables CSS lorsque Alpine.js est initialisé
+        Alpine.data("carouselConfig", () => ({
+            init() {
+                this.updateSlideCount();
+                window.addEventListener("resize", () =>
+                    this.updateSlideCount(),
+                );
+            },
+            updateSlideCount() {
+                const slidesToShow =
+                    window.innerWidth < 640
+                        ? 1
+                        : window.innerWidth < 1024
+                          ? 2
+                          : 4;
+                document.documentElement.style.setProperty(
+                    "--slides-to-show",
+                    slidesToShow,
+                );
+            },
+        }));
+    });
+</script>

@@ -1,10 +1,12 @@
 ---
-import Layout from "../layouts/Layout.astro";
 import LayoutWithHero from "../layouts/LayoutWithHero.astro";
 import ImgHero from "../assets/img/imgacceuilheader.webp";
 import ImgHeroDesktop from "../assets/img/imgherodesktop.webp";
+import Carousel from "../components/Carousel.astro";
+import Accordeon from "../components/Accordeon.astro";
+import { Picture } from "astro:assets";
 
-const title = "Sci-fi stival";
+const title = "Sci-fi Stival";
 const subTitle = "Festival de science fiction";
 const description = "13 au 15 Mars 2025";
 ---
@@ -18,6 +20,67 @@ const description = "13 au 15 Mars 2025";
     alt="hero"
     classLayout="min-h-screen"
 >
-    <h1 class="font-title-orb text-pink">Sci-fi Stival</h1>
-    <p class="h-screen">Texte standard</p>
+    <Fragment slot="content">
+        <!--  Rectangle violet avec texte -->
+        <div
+            class="bg-darkpurple font-sans text-white p-6 md:p-8 rounded-2xl shadow-lg max-w-3xl mx-auto text-center"
+        >
+            <p class="text-lg md:text-xl leading-relaxed">
+                Bienvenue au Sci-Fi' Stival, le festival de cinéma de
+                science-fiction de Belfort !<br />
+                Du 13 au 15 mars 2025, plongez dans un univers futuriste avec des
+                films captivants, des rencontres passionnantes et des expériences
+                immersives. Préparez-vous à un voyage inoubliable à travers les étoiles
+                et les mondes fantastiques que nous avons sélectionnés pour vous
+                !
+            </p>
+        </div>
+
+        <!--  Icônes de navigation -->
+        <div class="flex justify-center gap-25 mt-10">
+            <a
+                href="/infos"
+                class="flex flex-col items-center text-center text-gray-800 hover:text-pink-500 transition"
+            >
+                <img
+                    src="src/assets/icons/billet-icons.svg"
+                    alt="Informations"
+                    class="w-14 h-14 mb-2"
+                />
+                <span class="text-sm font-semibold">Billetterie</span>
+            </a>
+            <a
+                href="/programme"
+                class="flex flex-col items-center text-center text-gray-800 hover:text-pink-500 transition"
+            >
+                <img
+                    src="src/assets/icons/programme-icons.svg"
+                    alt="Informations"
+                    class="w-14 h-14 mb-2"
+                />
+                <span class="text-sm font-semibold">Programme</span>
+            </a>
+            <a
+                href="/infos"
+                class="flex flex-col items-center text-center text-gray-800 hover:text-pink-500 transition"
+            >
+                <img
+                    src="src/assets/icons/informations.svg"
+                    alt="Informations"
+                    class="w-14 h-14 mb-2"
+                />
+                <span class="text-sm font-semibold">Informations</span>
+            </a>
+        </div>
+
+        <!--  Séparateur -->
+        <div class="w-24 h-1 bg-gray-400 mx-auto my-12"></div>
+
+        <!--  Carrousel -->
+
+        <Carousel />
+
+        <!-- Accordéon Partenaires -->
+        <Accordeon />
+    </Fragment>
 </LayoutWithHero>

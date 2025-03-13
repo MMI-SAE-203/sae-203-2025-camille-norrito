@@ -14,8 +14,10 @@
     "@fontsource/krona-one": "^5.2.5",
     "@fontsource/syncopate": "^5.2.5",
     "@tailwindcss/vite": "^4.0.12",
+    "alpinejs": "^3.14.9",
     "astro": "^5.4.2",
     "pocketbase": "^0.25.2",
+    "swiper": "^11.2.5",
     "tailwindcss": "^4.0.12"
   }
 }

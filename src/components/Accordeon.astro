@@ -1,0 +1,63 @@
+---
+// Accordeon.astro
+---
+
+<div x-data="{ open: false }" class="accordion max-w-3xl mx-auto my-8">
+    <button
+        @click="open = !open"
+        class="accordion-header accordion-toggle w-full bg-darkpurple text-white p-4 rounded-t-lg flex justify-between items-center"
+    >
+        <h4 class="text-xl font-semibold">Nos Partenaires</h4>
+        <svg
+            class="w-6 h-6 transition-transform"
+            :class="{'rotate-180': open}"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+
+    <div
+        x-show="open"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform scale-y-90"
+        x-transition:enter-end="opacity-100 transform scale-y-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 transform scale-y-100"
+        x-transition:leave-end="opacity-0 transform scale-y-90"
+        class="partner-logos bg-white p-6 rounded-b-lg shadow-md"
+    >
+        <div
+            class="flex flex-col md:flex-row justify-between items-center gap-6"
+        >
+            <div class="partner-left w-full md:w-1/3">
+                <img
+                    src="src/assets/img/institutfr.webp"
+                    alt="Partenaire Institut Fr"
+                    class="w-full"
+                />
+            </div>
+            <div
+                class="partner-right w-full md:w-2/3 flex flex-col md:flex-row gap-4 justify-center"
+            >
+                <img
+                    src="src/assets/img/cnc.webp"
+                    alt="Partenaire CNC"
+                    class="w-full md:w-1/2"
+                />
+                <img
+                    src="src/assets/img/creditcoop.webp"
+                    alt="Partenaire Crédit Coopératif"
+                    class="w-full md:w-1/2"
+                />
+            </div>
+        </div>
+    </div>
+</div>
