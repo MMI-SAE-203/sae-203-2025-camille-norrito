@@ -4,6 +4,7 @@ import ImgHeroDesktop from "../assets/img/imgherodesktop.webp";
 import Carousel from "../components/Carousel.astro";
 import Accordeon from "../components/Accordeon.astro";
 import ImgHero from "../../public/img/imgherodesktop.webp";
+import BilletIcon from "../assets/icons/billet-icons.svg";
 
 import { Picture } from "astro:assets";
 
@@ -44,7 +45,7 @@ const description = "13 au 15 Mars 2025";
                 class="flex flex-col items-center text-center text-gray-800 hover:text-pink-500 transition"
             >
                 <img
-                    src="/icons/billet-icons.svg"
+                    src={BilletIcon.src}
                     alt="Informations"
                     class="w-14 h-14 mb-2"
                 />
