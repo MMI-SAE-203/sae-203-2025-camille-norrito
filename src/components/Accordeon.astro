@@ -1,5 +1,7 @@
 ---
-// Accordeon.astro
+import InstitutFr from "../assets/img/institutfr.webp";
+import Creditcop from "../assets/img/creditcoop.webp";
+import CNC from "../assets/img/cnc.webp";
 ---
 
 <div x-data="{ open: false }" class="accordion max-w-3xl mx-auto my-8">
@@ -39,7 +41,7 @@
         >
             <div class="partner-left w-full md:w-1/3">
                 <img
-                    src="src/assets/img/institutfr.webp"
+                    src={InstitutFr.src}
                     alt="Partenaire Institut Fr"
                     class="w-full"
                 />
@@ -48,12 +50,12 @@
                 class="partner-right w-full md:w-2/3 flex flex-col md:flex-row gap-4 justify-center"
             >
                 <img
-                    src="src/assets/img/cnc.webp"
+                    src={CNC.src}
                     alt="Partenaire CNC"
                     class="w-full md:w-1/2"
                 />
                 <img
-                    src="src/assets/img/creditcoop.webp"
+                    src={Creditcop.src}
                     alt="Partenaire Crédit Coopératif"
                     class="w-full md:w-1/2"
                 />
