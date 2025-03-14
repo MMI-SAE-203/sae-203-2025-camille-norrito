@@ -101,10 +101,10 @@ import IconYoutube from "../assets/icons/youtubeclair.svg";
 
                 if (isOpen) {
                     nav.classList.add("max-lg:hidden");
-                    nav.classList.add("max-lg:h-screen");
+                    nav.classList.remove("max-lg:h-screen");
                 } else {
                     nav.classList.remove("max-lg:hidden");
-                    nav.classList.remove("max-lg:h-screen");
+                    nav.classList.add("max-lg:h-screen");
                     nav.classList.add("bg-darkpurple");
                 }
 
