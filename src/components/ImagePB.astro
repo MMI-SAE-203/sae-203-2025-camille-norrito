@@ -18,15 +18,16 @@ const imageUrl = record?.[field]
 
 {
     imageUrl && (
-        <Picture
-            pictureAttributes={{
-                class: `w-full h-auto aspect-[2/3] ${classPicture}`,
-            }}
-            class={classImg}
-            inferSize={true}
-            formats={["avif", "webp"]}
-            alt={alt || "Image"}
-            src={imageUrl}
-        />
+        // <Picture
+        //     pictureAttributes={{
+        //         class: `w-full h-auto aspect-[2/3] ${classPicture}`,
+        //     }}
+        //     class={classImg}
+        //     inferSize={true}
+        //     formats={["avif", "webp"]}
+        //     alt={alt || "Image"}
+        //     src={imageUrl}
+        // />
+        <img class={classImg} alt={alt || "Image"} src={imageUrl} />
     )
 }
